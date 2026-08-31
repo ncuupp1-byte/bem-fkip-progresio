@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Notulensi — Admin BEM FKIP</title>
+<script src="../assets/data.js"></script>
+<link rel="stylesheet" href="admin-shared.css"/>
+</head>
+<body>
+<div id="app"></div>
+<script src="admin-ui.js"></script>
+<script>
+const user = BEM.requireAuth('notulensi');
+if (!user) throw '';
+initAdminShell(user, 'notulensi', 'Notulensi Rapat');
+
+let notulensi = [];
+
+async function loadNotulensi() {
+  notulensi = await BEM.getData('notulensi') || [];
+  render();
+}
+
+function render() {
+  setContent(`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+      <h2 style="font-size:18px;font-weight:800;color:var(--green)">Notulensi Rapat</h2>
+      <button class="btn btn-green" onclick="showForm()">+ Tambah Notulensi</button>
+    </div>
+
+    <div class="panel" id="nFormPanel" style="display:none;margin-bottom:20px">
+      <div class="panel-head"><h3 id="nFormTitle">Tambah Notulensi</h3></div>
+      <div class="panel-body">
+        <input type="hidden" id="nEditId"/>
+        <div class="fg"><label class="fl">Judul Rapat *</label><input class="fi" id="n_judul" placeholder="Contoh: Rapat Koordinasi Bulanan — Mei 2026"/></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="fg"><label class="fl">Tanggal Rapat</label><input class="fi" type="date" id="n_tgl"/></div>
+          <div class="fg"><label class="fl">Peserta</label><input class="fi" id="n_peserta" placeholder="Contoh: 42 pengurus"/></div>
+        </div>
+        <div class="fg"><label class="fl">Ringkasan Notulensi</label><textarea class="fi" id="n_isi" rows="4" placeholder="Poin-poin penting rapat..."></textarea></div>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button class="btn btn-green" onclick="saveNotulensi()">💾 Simpan</button>
+          <button class="btn btn-outline" onclick="document.getElementById('nFormPanel').style.display='none'">Batal</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Daftar Notulensi (${notulensi.length})</h3></div>
+      <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead><tr><th>Judul Rapat</th><th>Tanggal</th><th>Peserta</th><th>Ringkasan</th><th>Aksi</th></tr></thead>
+          <tbody>
+            ${notulensi.length ? notulensi.map(n => `
+              <tr>
+                <td style="font-weight:700;max-width:240px">${n.judul}</td>
+                <td style="color:var(--muted);white-space:nowrap">${n.tanggal}</td>
+                <td>${n.peserta||'—'}</td>
+                <td style="max-width:200px;font-size:12px;color:var(--muted)">${(n.isi||'').substring(0,80)}${(n.isi||'').length>80?'...':''}</td>
+                <td>
+                  <button class="btn btn-outline" onclick="editNotulensi(${n.id})" style="margin-right:4px">✏️</button>
+                  <button class="btn btn-red" onclick="deleteNotulensi(${n.id})">🗑</button>
+                </td>
+              </tr>
+            `).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">Belum ada notulensi.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `);
+  document.getElementById('n_tgl').value = new Date().toISOString().split('T')[0];
+}
+
+function showForm() {
+  document.getElementById('nFormPanel').style.display = 'block';
+  document.getElementById('nEditId').value = '';
+  document.getElementById('nFormTitle').textContent = 'Tambah Notulensi';
+  document.getElementById('n_judul').value = '';
+  document.getElementById('n_peserta').value = '';
+  document.getElementById('n_isi').value = '';
+}
+function editNotulensi(id) {
+  const n = notulensi.find(x => x.id == id); if (!n) return;
+  document.getElementById('nFormPanel').style.display = 'block';
+  document.getElementById('nFormTitle').textContent = 'Edit Notulensi';
+  document.getElementById('nEditId').value = id;
+  document.getElementById('n_judul').value = n.judul;
+  document.getElementById('n_peserta').value = n.peserta;
+  document.getElementById('n_isi').value = n.isi || '';
+}
+async function saveNotulensi() {
+  const judul = document.getElementById('n_judul').value.trim();
+  if (!judul) { alert('Judul wajib diisi!'); return; }
+  const tglRaw = document.getElementById('n_tgl').value;
+  const tgl = tglRaw
+    ? new Date(tglRaw).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})
+    : new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
+  const editId = document.getElementById('nEditId').value;
+  const obj = { judul, tanggal: tgl, peserta: document.getElementById('n_peserta').value, isi: document.getElementById('n_isi').value, file: '' };
+
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = 'Menyimpan...';
+  if (editId) await BEM.updateData('notulensi', editId, obj);
+  else        await BEM.insertData('notulensi', obj);
+  btn.disabled = false; btn.textContent = '💾 Simpan';
+  document.getElementById('nFormPanel').style.display = 'none';
+  await loadNotulensi();
+}
+async function deleteNotulensi(id) {
+  if (!confirm('Hapus notulensi ini?')) return;
+  await BEM.deleteData('notulensi', id);
+  await loadNotulensi();
+}
+
+loadNotulensi();
+</script>
+</body>
+</html>

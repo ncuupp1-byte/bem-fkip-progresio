@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Berita — BEM FKIP Kabinet Progresio</title>
+<script src="assets/data.js"></script>
+<link rel="stylesheet" href="assets/style.css"/>
+<style>
+.berita-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 28px; }
+.artikel-list { display: flex; flex-direction: column; gap: 20px; }
+.artikel-card {
+  background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  display: flex; gap: 0; transition: box-shadow .2s; cursor: pointer;
+}
+.artikel-card:hover { box-shadow: 0 6px 24px var(--shadow); }
+.artikel-img {
+  width: 160px; flex-shrink: 0; background: var(--green-light);
+  display: flex; align-items: center; justify-content: center; font-size: 44px;
+}
+.artikel-body { padding: 18px; flex: 1; }
+.artikel-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+.artikel-body h3 { font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; line-height: 1.4; }
+.artikel-body p { font-size: 13px; color: var(--text-light); line-height: 1.6; }
+.artikel-body .readmore { font-size: 12px; font-weight: 600; color: var(--green-main); margin-top: 10px; display: inline-block; }
+
+.artikel-featured {
+  background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px;
+  transition: box-shadow .2s; cursor: pointer;
+}
+.artikel-featured:hover { box-shadow: 0 6px 24px var(--shadow); }
+.featured-img {
+  height: 200px; background: var(--green-main);
+  display: flex; align-items: center; justify-content: center; font-size: 64px;
+}
+.featured-body { padding: 20px; }
+.featured-body h2 { font-size: 18px; font-weight: 800; color: var(--text-dark); margin-bottom: 8px; line-height: 1.4; }
+.featured-body p { font-size: 13px; color: var(--text-light); line-height: 1.65; }
+
+/* SIDEBAR */
+.sidebar { display: flex; flex-direction: column; gap: 20px; }
+.sidebar-box { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.sidebar-title { font-size: 13px; font-weight: 700; color: var(--green-main); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid var(--gold-main); }
+.sidebar-list { display: flex; flex-direction: column; gap: 10px; }
+.sidebar-item { display: flex; gap: 10px; align-items: flex-start; padding-bottom: 10px; border-bottom: 1px solid var(--green-pale); }
+.sidebar-item:last-child { border-bottom: none; padding-bottom: 0; }
+.sidebar-item .s-date { font-size: 10px; color: var(--text-light); white-space: nowrap; }
+.sidebar-item h5 { font-size: 12px; font-weight: 600; color: var(--text-dark); line-height: 1.4; }
+.tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag-cloud span {
+  background: var(--green-light); color: var(--green-main);
+  padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 500; cursor: pointer;
+}
+.tag-cloud span:hover { background: var(--green-main); color: white; }
+
+@media(max-width:768px) {
+  .berita-grid { grid-template-columns: 1fr; }
+  .artikel-img { width: 100px; }
+}
+@media(max-width:480px) {
+  .artikel-card { flex-direction: column; }
+  .artikel-img { width: 100%; height: 120px; }
+}
+</style>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="page-hero">
+  <h1>Berita & Pengumuman</h1>
+  <p>Informasi terkini dari BEM FKIP Kabinet Progresio</p>
+</div>
+
+<div class="container">
+  <div class="berita-grid">
+    <!-- MAIN dirender JS -->
+    <div id="beritaMain"></div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-box">
+        <div class="sidebar-title">Pengumuman Terbaru</div>
+        <div class="sidebar-list" id="sidebarPengumuman">
+          <div style="text-align:center;color:var(--text-light);font-size:13px;padding:16px">Memuat...</div>
+        </div>
+      </div>
+
+      <div class="sidebar-box">
+        <div class="sidebar-title">Topik</div>
+        <div class="tag-cloud" id="tagCloud"></div>
+      </div>
+
+      <div class="sidebar-box" style="background:var(--green-main);border:none">
+        <div style="color:var(--gold-light);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Ikuti Kami</div>
+        <p style="font-size:13px;color:rgba(255,255,255,.75);margin-bottom:14px">Dapatkan update terbaru kegiatan BEM FKIP Kabinet Progresio di media sosial kami.</p>
+        <a href="#" style="display:block;background:rgba(255,255,255,.15);color:white;text-decoration:none;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;margin-bottom:6px;text-align:center">📱 Instagram @bemfkip_unuc</a>
+        <a href="mailto:bemfkip@unucirebon.ac.id" style="display:block;background:rgba(255,255,255,.15);color:white;text-decoration:none;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;text-align:center">✉ Email Resmi BEM FKIP</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="assets/data.js"></script>
+<script src="assets/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  const berita = await BEM.getData('berita') || [];
+  const main = document.getElementById('beritaMain');
+
+  if (!berita.length) {
+    main.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-light)"><div style="font-size:40px;margin-bottom:12px">📰</div><p>Belum ada berita yang dipublikasi.</p></div>';
+    return;
+  }
+
+  // Badge warna per kategori
+  const badgeClass = (kat) => {
+    const map = { Akademik:'badge-green', Prestasi:'badge-green', Sosial:'badge-gold', Pengumuman:'badge-gold', Advokasi:'badge-gray', Keagamaan:'badge-green', Umum:'badge-gray' };
+    return map[kat] || 'badge-gray';
+  };
+
+  // Featured
+  const featured = berita.find(b => b.featured) || berita[0];
+  const rest = berita.filter(b => b.id !== featured.id);
+
+  const snippet = (isi, max) => {
+    if (!isi) return '';
+    const plain = isi.replace(/##+ /g,'').replace(/> /g,'').replace(/- /g,'');
+    return plain.length > max ? plain.slice(0, max) + '...' : plain;
+  };
+
+  main.innerHTML = `
+    <a href="artikel.html?id=${featured.id}" class="artikel-featured" style="text-decoration:none;display:block">
+      <div class="featured-img" style="font-size:64px">${featured.icon || '📰'}</div>
+      <div class="featured-body">
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+          <span class="badge ${badgeClass(featured.kategori)}">${featured.kategori}</span>
+          <span style="font-size:12px;color:var(--text-light)">${featured.tanggal}</span>
+        </div>
+        <h2 style="color:var(--text-dark)">${featured.judul}</h2>
+        <p style="color:var(--text-light);font-size:13px;margin-top:8px;line-height:1.6">${snippet(featured.isi, 200)}</p>
+        <span class="readmore" style="margin-top:10px;display:inline-block">Baca selengkapnya →</span>
+      </div>
+    </a>
+
+    <div class="artikel-list">
+      ${rest.map(b => `
+        <a href="artikel.html?id=${b.id}" class="artikel-card" style="text-decoration:none;color:inherit">
+          <div class="artikel-img">${b.icon || '📰'}</div>
+          <div class="artikel-body">
+            <div class="artikel-meta">
+              <span class="badge ${badgeClass(b.kategori)}">${b.kategori}</span>
+              <span style="font-size:12px;color:var(--text-light)">${b.tanggal}</span>
+            </div>
+            <h3>${b.judul}</h3>
+            <p>${snippet(b.isi, 120)}</p>
+            <span class="readmore">Baca selengkapnya →</span>
+          </div>
+        </a>
+      `).join('')}
+    </div>
+  `;
+
+  // Sidebar pengumuman — ambil 4 berita terbaru kategori Pengumuman atau semua
+  const pengumuman = berita.filter(b => b.kategori === 'Pengumuman').slice(0, 4);
+  const sideEl = document.getElementById('sidebarPengumuman');
+  if (pengumuman.length) {
+    sideEl.innerHTML = pengumuman.map(p => `
+      <div class="sidebar-item">
+        <div>
+          <div class="s-date">${p.tanggal}</div>
+          <h5><a href="artikel.html?id=${p.id}" style="color:var(--text-dark);text-decoration:none">${p.judul}</a></h5>
+        </div>
+      </div>
+    `).join('');
+  } else {
+    sideEl.innerHTML = berita.slice(0, 4).map(b => `
+      <div class="sidebar-item">
+        <div>
+          <div class="s-date">${b.tanggal}</div>
+          <h5><a href="artikel.html?id=${b.id}" style="color:var(--text-dark);text-decoration:none">${b.judul}</a></h5>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Tag cloud dari kategori unik
+  const tags = [...new Set(berita.map(b => b.kategori))];
+  document.getElementById('tagCloud').innerHTML = tags.map(t =>
+    `<span onclick="filterByTag('${t}')" style="cursor:pointer">${t}</span>`
+  ).join('');
+});
+
+function filterByTag(tag) {
+  document.querySelectorAll('.artikel-card').forEach(card => {
+    const kat = card.querySelector('.badge') ? card.querySelector('.badge').textContent : '';
+    card.style.display = (kat === tag || tag === 'Semua') ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

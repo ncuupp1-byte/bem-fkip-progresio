@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin Login — BEM FKIP Kabinet Progresio</title>
+<script src="../assets/data.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system,"Segoe UI",system-ui,sans-serif;
+  background: linear-gradient(135deg,#1a5c27 0%,#1e6b2e 50%,#2d7a3a 100%);
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  padding:24px;
+}
+.login-box{
+  background:white; border-radius:16px; padding:40px 36px;
+  width:100%; max-width:400px;
+  box-shadow: 0 24px 64px rgba(0,0,0,.3);
+}
+.login-logo{ text-align:center; margin-bottom:28px; }
+.login-logo img{ height:56px; width:56px; object-fit:contain; margin:0 4px; }
+.login-logo .org{ font-size:18px; font-weight:800; color:#1e6b2e; margin-top:10px; }
+.login-logo .kab{ font-size:12px; color:#d4a017; font-weight:600; letter-spacing:.5px; }
+.form-label{ display:block; font-size:12px; font-weight:700; color:#3d5240; margin-bottom:5px; letter-spacing:.3px; }
+.form-input{
+  width:100%; border:1.5px solid #d8e8da; border-radius:8px;
+  padding:11px 14px; font-size:14px; color:#1a2e1e;
+  background:#f2faf4; transition:border .2s; margin-bottom:14px;
+}
+.form-input:focus{ outline:none; border-color:#1e6b2e; background:white; }
+.login-btn{
+  width:100%; padding:13px; background:#1e6b2e; color:white;
+  border:none; border-radius:8px; font-size:15px; font-weight:700;
+  cursor:pointer; transition:background .2s; margin-top:4px;
+}
+.login-btn:hover{ background:#2d7a3a; }
+.error-msg{
+  background:#fee2e2; color:#dc2626; border-radius:8px;
+  padding:10px 14px; font-size:13px; font-weight:500;
+  margin-bottom:14px; display:none; text-align:center;
+}
+.hint{
+  margin-top:20px; padding:14px; background:#f2faf4;
+  border-radius:8px; border:1px solid #d8e8da;
+}
+.hint-title{ font-size:11px; font-weight:700; color:#3d5240; margin-bottom:6px; text-transform:uppercase; letter-spacing:.4px; }
+.hint-item{ font-size:12px; color:#6b7c6e; padding:2px 0; }
+.hint-item code{ background:#e8f5eb; color:#1e6b2e; padding:1px 5px; border-radius:3px; font-size:11px; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="login-box">
+  <div class="login-logo">
+    <div id="logoWrap"></div>
+    <div class="org">BEM FKIP — Admin</div>
+    <div class="kab">Kabinet Progresio 2025–2026</div>
+  </div>
+
+  <div class="error-msg" id="errMsg">Username atau password salah. Coba lagi.</div>
+
+  <label class="form-label" for="uname">USERNAME</label>
+  <input class="form-input" type="text" id="uname" placeholder="Masukkan username..." autocomplete="off"/>
+
+  <label class="form-label" for="pass">PASSWORD</label>
+  <input class="form-input" type="password" id="pass" placeholder="Masukkan password..."/>
+
+  <button class="login-btn" onclick="doLogin()">Masuk ke Dashboard →</button>
+
+  <div class="hint">
+    <div class="hint-title">Contoh Login</div>
+    <div class="hint-item">Ketua: <code>ketua</code> / <code>progresio2026</code></div>
+    <div class="hint-item">Bendahara: <code>bendahara</code> / <code>keuangan2026</code></div>
+    <div class="hint-item">Kominfo: <code>dept.kominfo</code> / <code>kominfo2026</code></div>
+  </div>
+</div>
+
+<script>
+// Inject logos
+const LOGO_BEM_EL = new Image(); LOGO_BEM_EL.src = LOGO_BEM; LOGO_BEM_EL.style = 'height:56px;width:56px;object-fit:contain;margin:0 4px';
+const LOGO_KAB_EL = new Image(); LOGO_KAB_EL.src = LOGO_KAB; LOGO_KAB_EL.style = 'height:56px;width:56px;object-fit:contain;margin:0 4px';
+document.getElementById('logoWrap').append(LOGO_BEM_EL, LOGO_KAB_EL);
+
+// Enter key
+document.getElementById('pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('uname').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+function doLogin() {
+  const u = document.getElementById('uname').value.trim();
+  const p = document.getElementById('pass').value;
+  const user = BEM.login(u, p);
+  if (user) {
+    window.location.href = 'index.html';
+  } else {
+    const err = document.getElementById('errMsg');
+    err.style.display = 'block';
+    document.getElementById('pass').value = '';
+  }
+}
+
+// Already logged in? Redirect
+if (BEM.currentUser()) window.location.href = 'index.html';
+</script>
+</body>
+</html>

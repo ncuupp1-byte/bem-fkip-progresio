@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Tentang Kami — BEM FKIP Kabinet Progresio</title>
+<script src="assets/data.js"></script>
+<link rel="stylesheet" href="assets/style.css"/>
+<style>
+.struktur-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.pengurus-card {
+  background: white; border: 1px solid var(--border); border-radius: 12px;
+  padding: 20px; text-align: center; transition: box-shadow .2s, transform .2s;
+}
+.pengurus-card:hover { box-shadow: 0 6px 24px var(--shadow); transform: translateY(-2px); }
+.avatar {
+  width: 64px; height: 64px; border-radius: 50%; background: var(--green-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; margin: 0 auto 12px; border: 3px solid var(--gold-main);
+}
+.pengurus-name { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 3px; }
+.pengurus-jabatan { font-size: 12px; color: var(--green-main); font-weight: 600; }
+.pengurus-prodi { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+
+.inti-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 36px; }
+.inti-card {
+  background: var(--green-main); color: white; border-radius: 12px; padding: 24px;
+  display: flex; align-items: center; gap: 16px;
+}
+.inti-avatar {
+  width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0;
+}
+.inti-name { font-size: 16px; font-weight: 800; }
+.inti-jabatan { font-size: 12px; color: var(--gold-light); margin-top: 2px; font-weight: 600; letter-spacing: .4px; }
+.inti-prodi { font-size: 12px; color: rgba(255,255,255,.65); margin-top: 2px; }
+
+.divisi-section { background: var(--green-pale); padding: 48px 24px; }
+.divisi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+.divisi-card {
+  background: white; border: 1px solid var(--border); border-radius: 10px; padding: 18px;
+  text-align: center; transition: box-shadow .2s;
+}
+.divisi-card:hover { box-shadow: 0 4px 16px var(--shadow); }
+.divisi-icon { font-size: 28px; margin-bottom: 10px; }
+.divisi-name { font-size: 13px; font-weight: 700; color: var(--green-main); line-height: 1.4; }
+.divisi-count { font-size: 11px; color: var(--text-light); margin-top: 4px; }
+
+.sejarah-box {
+  background: white; border: 1px solid var(--border); border-radius: 12px; padding: 32px;
+  border-left: 5px solid var(--gold-main); max-width: 800px; margin: 0 auto;
+}
+
+@media(max-width:768px) {
+  .struktur-grid { grid-template-columns: 1fr 1fr; }
+  .inti-grid { grid-template-columns: 1fr; }
+  .divisi-grid { grid-template-columns: repeat(2,1fr); }
+}
+@media(max-width:480px) {
+  .struktur-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="page-hero">
+  <h1>Tentang Kami</h1>
+  <p>Mengenal BEM FKIP Kabinet Progresio lebih dekat</p>
+</div>
+
+<div class="container">
+
+  <!-- SEJARAH -->
+  <div class="section-heading" style="margin-top:8px">
+    <h2>Sejarah Singkat</h2>
+    <div class="line"></div>
+  </div>
+  <div class="sejarah-box" style="margin-bottom:48px">
+    <p style="margin-bottom:14px">
+      <strong>Badan Eksekutif Mahasiswa Fakultas Keguruan dan Ilmu Pendidikan (BEM FKIP)</strong>
+      Universitas Nahdlatul Ulama Cirebon adalah organisasi kemahasiswaan tertinggi di tingkat fakultas
+      yang berfungsi sebagai wadah aspirasi, pengembangan, dan pengabdian mahasiswa FKIP.
+    </p>
+    <p style="margin-bottom:14px">
+      BEM FKIP berkomitmen menjadi jembatan antara mahasiswa dan institusi, mendorong terciptanya
+      lingkungan akademik yang kondusif, serta memfasilitasi pengembangan diri mahasiswa secara
+      holistik — intelektual, sosial, maupun karakter.
+    </p>
+    <p>
+      <strong style="color:var(--green-main)">Kabinet Progresio</strong> mengemban amanah periode
+      <strong>2025–2026</strong> di bawah kepemimpinan <strong>Muhammad Supian</strong> selaku Gubernur BEM FKIP.
+      Dilindungi oleh <em>Prof. Dr. H. Farihin Nur, M.Pd.</em> (Rektor) dan dinasihati oleh
+      <em>Dr. Mikkey Anggara Suganda, M. Or</em> (Dekan FKIP).
+    </p>
+  </div>
+
+  <!-- VISI MISI -->
+  <div class="section-heading">
+    <h2>Visi & Misi</h2>
+    <div class="line"></div>
+  </div>
+  <div class="vm-grid" style="max-width:900px;margin:0 auto 48px">
+    <div class="vm-box">
+      <h3>Visi</h3>
+      <p>Menjadikan BEM Fakultas sebagai poros koordinasi yang integratif dan suportif demi terciptanya sinergi organisasi mahasiswa yang harmonis.</p>
+    </div>
+    <div class="vm-box">
+      <h3>Misi</h3>
+      <ul>
+        <li><strong>Sinkronisasi Agenda Fakultas</strong> — Menyusun kalender kegiatan bersama untuk menghindari tumpang tindih jadwal antar-Himpunan Mahasiswa.</li>
+        <li><strong>Forum Komunikasi Berkala</strong> — Rapat koordinasi rutin sebagai ruang evaluasi, penyerapan aspirasi, dan penyelarasan arah gerak organisasi.</li>
+        <li><strong>Kolaborasi Strategis Lintas Jurusan</strong> — Menginisiasi program kerja bersama yang melibatkan partisipasi aktif antar-Himpunan Mahasiswa di tingkat fakultas.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PENGURUS INTI -->
+  <div class="section-heading">
+    <h2>Badan Pengurus Harian</h2>
+    <p>Pimpinan Kabinet Progresio BEM FKIP UNUC 2025–2026</p>
+    <div class="line"></div>
+  </div>
+  <div id="bphSection" style="max-width:860px;margin:0 auto 48px"></div>
+
+</div>
+
+<!-- DEPARTEMEN -->
+<section class="divisi-section">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="section-heading">
+      <h2>Departemen</h2>
+      <p>Struktur kerja Kabinet Progresio BEM FKIP</p>
+      <div class="line"></div>
+    </div>
+    <div id="deptGrid" class="divisi-grid"></div>
+  </div>
+</section>
+
+<!-- PENGURUS LENGKAP -->
+<div class="container">
+  <div class="section-heading">
+    <h2>Pengurus Departemen</h2>
+    <p>Kepala departemen dan anggota Kabinet Progresio</p>
+    <div class="line"></div>
+  </div>
+  <div id="pengurusGrid" class="struktur-grid"></div>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="assets/data.js"></script>
+<script src="assets/main.js"></script>
+<script>
+const DEPT_ICONS = { 'Pendidikan':'📚', 'Minat & Bakat':'🎭', 'Advokasi & Kesejahteraan':'⚖️', 'Komunikasi & Informasi':'📢', 'Keagamaan':'🕌', 'Jaringan & Relasi':'🤝' };
+
+document.addEventListener('DOMContentLoaded', function() {
+  const data = BEM.getPengurus() || {};
+
+  // BPH
+  const bphColors = ['var(--green-main)','var(--gold-dark)','var(--green-dark)','var(--green-dark)','#1a6b2e','#2d6020'];
+  const bphEl = document.getElementById('bphSection');
+  if (bphEl && data.bph) {
+    bphEl.innerHTML = '<div class="inti-grid">' + data.bph.map((b,i) => `
+      <div class="inti-card" style="background:${bphColors[i]||'var(--green-main)'}">
+        <div class="inti-avatar">👤</div>
+        <div>
+          <div class="inti-name">${b.nama}</div>
+          <div class="inti-jabatan">${b.jabatan}</div>
+          <div class="inti-prodi">${b.prodi||'FKIP UNUC'}</div>
+        </div>
+      </div>
+    `).join('') + '</div>';
+  }
+
+  // Departemen grid
+  const deptGrid = document.getElementById('deptGrid');
+  if (deptGrid && data.departemen) {
+    deptGrid.innerHTML = data.departemen.map(d => `
+      <div class="divisi-card">
+        <div class="divisi-icon">${DEPT_ICONS[d.nama.replace('Departemen ','')]||'📌'}</div>
+        <div class="divisi-name">${d.nama}</div>
+        <div class="divisi-count">Kepala: ${d.kepala}</div>
+      </div>
+    `).join('');
+  }
+
+  // Pengurus grid (kepala dept)
+  const pgEl = document.getElementById('pengurusGrid');
+  if (pgEl && data.departemen) {
+    pgEl.innerHTML = data.departemen.map(d => `
+      <div class="pengurus-card">
+        <div class="avatar">${DEPT_ICONS[d.nama.replace('Departemen ','')]||'👤'}</div>
+        <div class="pengurus-name">${d.kepala}</div>
+        <div class="pengurus-jabatan">Kepala ${d.nama}</div>
+        ${d.anggota && d.anggota.length ? `<div class="pengurus-prodi" style="font-size:11px">${d.anggota.join(' · ')}</div>` : ''}
+      </div>
+    `).join('');
+  }
+});
+</script>
+</body>
+</html>

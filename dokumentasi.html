@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dokumentasi — BEM FKIP Kabinet Progresio</title>
+<link rel="stylesheet" href="assets/style.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ─── DOK TABS ─── */
+.dokumen-tabs { display: flex; gap: 4px; margin-bottom: 28px; flex-wrap: wrap; }
+.dok-tab {
+  padding: 9px 20px; border-radius: 8px; border: 2px solid var(--border);
+  background: white; font-size: 13px; font-weight: 600; cursor: pointer;
+  color: var(--text-mid); transition: .2s;
+}
+.dok-tab.active { background: var(--green-main); border-color: var(--green-main); color: white; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ─── DOKUMEN GRID ─── */
+.dokumen-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+.dok-card {
+  background: white; border: 1px solid var(--border); border-radius: 12px;
+  padding: 20px; transition: box-shadow .2s, transform .2s; cursor: pointer;
+}
+.dok-card:hover { box-shadow: 0 6px 20px var(--shadow); transform: translateY(-2px); }
+.dok-icon { font-size: 36px; margin-bottom: 12px; }
+.dok-title { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; line-height: 1.4; }
+.dok-sub { font-size: 12px; color: var(--text-light); }
+.dok-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+.dok-size { font-size: 11px; color: var(--text-light); }
+.dok-download { font-size: 12px; font-weight: 600; color: var(--green-main); }
+
+/* ─── NOTULEN LIST ─── */
+.notulen-list { display: flex; flex-direction: column; gap: 12px; }
+.notulen-item {
+  background: white; border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px 20px; display: flex; gap: 16px; align-items: center;
+}
+.notulen-icon { font-size: 28px; flex-shrink: 0; }
+.notulen-info { flex: 1; }
+.notulen-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.notulen-info p { font-size: 12px; color: var(--text-light); }
+.notulen-dl { font-size: 12px; font-weight: 600; color: var(--green-main); flex-shrink: 0; }
+
+/* ──────────────────────────────────────────────
+   KEUANGAN DASHBOARD — semua scoped ke #keuDash
+   ────────────────────────────────────────────── */
+#keuDash { font-size: 14px; color: #1f2328; }
+#keuDash * { box-sizing: border-box; }
+
+#keuDash .kh {
+  background: #1e3a5f; color: #fff; padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px; border-radius: 12px 12px 0 0;
+}
+#keuDash .kh h3 { font-size: 16px; font-weight: 700; margin: 0; }
+#keuDash .kh .kh-sub { font-size: 11px; opacity: .7; margin-top: 2px; }
+#keuDash .kh-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+#keuDash .kh-acts button, #keuDash .kh-acts a {
+  padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: none; text-decoration: none; transition: .15s;
+}
+#keuDash .kb-gold { background: #d4a017; color: #1f2328; }
+#keuDash .kb-outline { background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.3) !important; }
+
+#keuDash .keu-body { background: #f0f2f5; padding: 20px; border-radius: 0 0 12px 12px; }
+
+/* Period bar */
+#keuDash .keu-period {
+  background: #fff; border: 1px solid #e5e7eb; border-radius: 8px;
+  padding: 10px 16px; display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap; margin-bottom: 18px;
+}
+#keuDash .keu-period label { font-size: 11px; color: #57606a; font-weight: 700; letter-spacing: .4px; }
+#keuDash .keu-period select,
+#keuDash .keu-period input[type=text] {
+  border: 1px solid #d1d5db; border-radius: 6px; padding: 5px 10px;
+  font-size: 13px; color: #1f2328; background: #fff;
+}
+#keuDash .keu-period button {
+  padding: 5px 14px; border-radius: 6px; border: none; font-size: 13px;
+  cursor: pointer; font-weight: 600;
+}
+#keuDash .kbp { background: #1e3a5f; color: #fff; }
+#keuDash .kbs { background: #e5e7eb; color: #374151; }
+
+/* Saldo box */
+#keuDash .saldo-box {
+  background: linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%);
+  color: #fff; border-radius: 10px; padding: 18px 20px;
+  margin-bottom: 18px; display: flex; justify-content: space-between;
+  align-items: center; flex-wrap: wrap; gap: 12px;
+}
+#keuDash .saldo-box .sb-label { font-size: 11px; opacity: .8; }
+#keuDash .saldo-box .sb-amount { font-size: 26px; font-weight: 800; }
+#keuDash .saldo-box .sb-right { text-align: right; }
+#keuDash .saldo-box input[type=number] {
+  background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3);
+  border-radius: 6px; padding: 4px 8px; color: #fff; font-size: 12px;
+  width: 150px; text-align: right;
+}
+
+/* Cards */
+#keuDash .keu-cards {
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+  gap: 14px; margin-bottom: 18px;
+}
+#keuDash .keu-card {
+  background: #fff; border-radius: 10px; padding: 16px;
+  border: 1px solid #e5e7eb;
+}
+#keuDash .keu-card .kcl { font-size: 11px; color: #57606a; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+#keuDash .keu-card .kcv { font-size: 20px; font-weight: 700; color: #1e3a5f; }
+#keuDash .keu-card .kcv.green { color: #16a34a; }
+#keuDash .keu-card .kcv.red { color: #dc2626; }
+#keuDash .keu-card .kcv.amber { color: #d97706; }
+#keuDash .keu-card .kcs { font-size: 11px; color: #57606a; margin-top: 4px; }
+#keuDash .keu-card .kpbar { background: #e5e7eb; border-radius: 99px; height: 7px; overflow: hidden; margin-top: 6px; }
+#keuDash .keu-card .kpfill { height: 100%; border-radius: 99px; background: #1e3a5f; transition: width .4s; }
+#keuDash .keu-card .kpfill.red { background: #dc2626; }
+#keuDash .keu-card .kpfill.amber { background: #d97706; }
+
+/* Inner tab nav */
+#keuDash .keu-tab-nav { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+#keuDash .keu-tab-btn {
+  padding: 7px 15px; border-radius: 6px; border: 1px solid #e5e7eb;
+  background: #fff; font-size: 13px; cursor: pointer; color: #57606a; font-weight: 500;
+}
+#keuDash .keu-tab-btn.active { background: #1e3a5f; color: #fff; border-color: #1e3a5f; }
+#keuDash .keu-tc { display: none; }
+#keuDash .keu-tc.active { display: block; }
+
+/* Panels */
+#keuDash .keu-panel { background: #fff; border-radius: 10px; border: 1px solid #e5e7eb; padding: 16px; margin-bottom: 16px; }
+#keuDash .keu-panel-title { font-size: 13px; font-weight: 700; color: #1e3a5f; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f0f2f5; }
+
+/* Forms */
+#keuDash .keu-form-row { display: grid; grid-template-columns: repeat(auto-fit,minmax(130px,1fr)); gap: 8px; margin-bottom: 10px; }
+#keuDash .keu-form-row input,
+#keuDash .keu-form-row select {
+  width: 100%; border: 1px solid #d1d5db; border-radius: 6px;
+  padding: 7px 10px; font-size: 13px; color: #1f2328;
+}
+#keuDash .keu-form-row input:focus,
+#keuDash .keu-form-row select:focus { outline: 2px solid #1e3a5f; border-color: transparent; }
+#keuDash .keu-act-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+#keuDash .ksu { background: #16a34a; color: #fff; padding: 7px 16px; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 600; }
+#keuDash .ksd { background: #dc2626; color: #fff; padding: 7px 16px; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 600; }
+#keuDash .kss { background: #e5e7eb; color: #374151; padding: 7px 16px; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 600; }
+
+/* Tables */
+#keuDash .ktw { overflow-x: auto; }
+#keuDash table { width: 100%; border-collapse: collapse; font-size: 13px; }
+#keuDash thead th {
+  background: #f7f8fa; padding: 8px 10px; text-align: left;
+  font-weight: 600; color: #374151; border-bottom: 1px solid #e5e7eb; white-space: nowrap;
+}
+#keuDash tbody td { padding: 8px 10px; border-bottom: 1px solid #f0f2f5; vertical-align: middle; }
+#keuDash tbody tr:hover { background: #f7f8fa; }
+
+/* Badges */
+#keuDash .kb { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+#keuDash .kb-g { background: #dcfce7; color: #16a34a; }
+#keuDash .kb-r { background: #fee2e2; color: #dc2626; }
+#keuDash .kb-a { background: #fef3c7; color: #d97706; }
+#keuDash .kb-b { background: #dbeafe; color: #1d4ed8; }
+
+/* Delete btn */
+#keuDash .kdel { background: none; border: none; color: #dc2626; cursor: pointer; font-size: 14px; padding: 2px 6px; border-radius: 4px; }
+#keuDash .kdel:hover { background: #fee2e2; }
+
+/* Charts */
+#keuDash .keu-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+#keuDash .keu-chart-wrap { position: relative; height: 220px; }
+#keuDash .keu-empty { text-align: center; color: #9ca3af; padding: 28px; font-size: 13px; }
+
+@media(max-width:700px) {
+  #keuDash .keu-grid2 { grid-template-columns: 1fr; }
+  #keuDash .keu-cards { grid-template-columns: 1fr 1fr; }
+}
+@media(max-width:480px) {
+  #keuDash .keu-cards { grid-template-columns: 1fr; }
+  .dokumen-grid { grid-template-columns: 1fr; }
+}
+@media(max-width:768px) {
+  .dokumen-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="page-hero">
+  <h1>Dokumentasi</h1>
+  <p>Arsip dan dokumentasi resmi BEM FKIP Kabinet Progresio</p>
+</div>
+
+<div class="container">
+  <div class="dokumen-tabs">
+    <button class="dok-tab active" onclick="switchDokTab(this,'keuangan')">💰 Laporan Keuangan</button>
+    <button class="dok-tab" onclick="switchDokTab(this,'kegiatan')">📋 Laporan Kegiatan</button>
+    <button class="dok-tab" onclick="switchDokTab(this,'notulen')">📝 Notulensi Rapat</button>
+    <button class="dok-tab" onclick="switchDokTab(this,'dokresmi')">📄 Dokumen Resmi</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       TAB: LAPORAN KEUANGAN — Full Dashboard
+       ═══════════════════════════════════════════ -->
+  <div class="tab-panel active" id="panel-keuangan">
+    <div id="keuDash">
+
+      <!-- Header -->
+      <div class="kh">
+        <div>
+          <h3>💼 Keuangan BEM FKIP — Kabinet Progresio</h3>
+          <div class="kh-sub">BEM FKIP · Universitas Nahdlatul Ulama Cirebon · 2025–2026</div>
+        </div>
+        <div class="kh-acts">
+          <button class="kb-gold" onclick="keuExportCSV()">⬇ Export CSV</button>
+          <button class="kb-outline" onclick="keuPrint()">🖨 Print</button>
+          <a href="organisasi-keuangan/Template_Keuangan_Organisasi.xlsx" download class="kb-outline">⬇ Template Excel</a>
+        </div>
+      </div>
+
+      <div class="keu-body">
+
+        <!-- Period bar -->
+        <div class="keu-period">
+          <label>PERIODE</label>
+          <select id="keu_filterBulan">
+            <option value="0">Semua Bulan</option>
+            <option value="1">Januari</option><option value="2">Februari</option>
+            <option value="3">Maret</option><option value="4">April</option>
+            <option value="5">Mei</option><option value="6">Juni</option>
+            <option value="7">Juli</option><option value="8">Agustus</option>
+            <option value="9">September</option><option value="10">Oktober</option>
+            <option value="11">November</option><option value="12">Desember</option>
+          </select>
+          <select id="keu_filterTahun"></select>
+          <button class="kbp" onclick="keuApplyFilters()">Terapkan</button>
+          <button class="kbs" onclick="keuApplyFilters()">Reset Filter</button>
+        </div>
+
+        <!-- Saldo box -->
+        <div class="saldo-box">
+          <div>
+            <div class="sb-label">SALDO KAS BERJALAN</div>
+            <div class="sb-amount" id="keu_saldoMain">Rp 0</div>
+            <div style="font-size:11px;opacity:.7;margin-top:4px" id="keu_periodLabel">Semua periode</div>
+          </div>
+          <div class="sb-right">
+            <div class="sb-label">ANGGARAN DASAR</div>
+            <div style="font-size:17px;font-weight:700" id="keu_anggaranDisplay">Rp 0</div>
+            <div style="margin-top:4px">
+              <input type="number" id="keu_anggaranInput" placeholder="Set anggaran..." oninput="keuUpdateAnggaran()"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary cards -->
+        <div class="keu-cards">
+          <div class="keu-card">
+            <div class="kcl">Total Pemasukan</div>
+            <div class="kcv green" id="keu_totalPemasukan">Rp 0</div>
+            <div class="kcs" id="keu_cntPemasukan">0 transaksi</div>
+          </div>
+          <div class="keu-card">
+            <div class="kcl">Total Pengeluaran</div>
+            <div class="kcv red" id="keu_totalPengeluaran">Rp 0</div>
+            <div class="kcs" id="keu_cntPengeluaran">0 transaksi</div>
+          </div>
+          <div class="keu-card">
+            <div class="kcl">Realisasi Anggaran</div>
+            <div class="kcv amber" id="keu_realisasiPct">0%</div>
+            <div class="kpbar"><div class="kpfill" id="keu_realisasiFill" style="width:0%"></div></div>
+            <div class="kcs" id="keu_realisasiSub">dari anggaran dasar</div>
+          </div>
+          <div class="keu-card">
+            <div class="kcl">Proyek / Kegiatan Aktif</div>
+            <div class="kcv" id="keu_totalProyek">0</div>
+            <div class="kcs" id="keu_subProyek">0 selesai</div>
+          </div>
+        </div>
+
+        <!-- Inner tab navigation -->
+        <div class="keu-tab-nav">
+          <button class="keu-tab-btn active" onclick="keuSwitchTab('transaksi',this)">📋 Transaksi</button>
+          <button class="keu-tab-btn" onclick="keuSwitchTab('proyek',this)">📁 Proyek/Kegiatan</button>
+          <button class="keu-tab-btn" onclick="keuSwitchTab('laporan',this)">📊 Laporan & Grafik</button>
+          <button class="keu-tab-btn" onclick="keuSwitchTab('anggaran',this)">🎯 RAB</button>
+        </div>
+
+        <!-- ── TAB: TRANSAKSI ── -->
+        <div class="keu-tc active" id="keutab-transaksi">
+          <div class="keu-panel">
+            <div class="keu-panel-title">+ Tambah Transaksi</div>
+            <div class="keu-form-row">
+              <input type="date" id="keu_t_tanggal"/>
+              <select id="keu_t_jenis">
+                <option value="pemasukan">Pemasukan</option>
+                <option value="pengeluaran">Pengeluaran</option>
+              </select>
+              <select id="keu_t_kategori">
+                <option>Iuran Anggota</option>
+                <option>Dana Kampus</option>
+                <option>Sponsor</option>
+                <option>Donasi</option>
+                <option>Konsumsi</option>
+                <option>Perlengkapan</option>
+                <option>Transportasi</option>
+                <option>Publikasi</option>
+                <option>Administrasi</option>
+                <option>Honorarium</option>
+                <option>Lain-lain</option>
+              </select>
+              <input type="text" id="keu_t_deskripsi" placeholder="Deskripsi..."/>
+              <input type="number" id="keu_t_jumlah" placeholder="Jumlah (Rp)"/>
+              <select id="keu_t_proyek">
+                <option value="">— Tidak ada kegiatan —</option>
+              </select>
+            </div>
+            <div class="keu-act-row">
+              <button class="ksu" onclick="keuAddTransaksi()">+ Tambah</button>
+              <button class="kss" onclick="keuClearTransaksiForm()">Reset</button>
+            </div>
+          </div>
+          <div class="keu-panel">
+            <div class="keu-panel-title">Daftar Transaksi</div>
+            <div class="ktw">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tanggal</th><th>Jenis</th><th>Kategori</th>
+                    <th>Deskripsi</th><th>Kegiatan</th>
+                    <th style="text-align:right">Jumlah</th><th></th>
+                  </tr>
+                </thead>
+                <tbody id="keu_transaksiTable"><tr><td colspan="7" class="keu-empty">Belum ada transaksi.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── TAB: PROYEK ── -->
+        <div class="keu-tc" id="keutab-proyek">
+          <div class="keu-panel">
+            <div class="keu-panel-title">+ Tambah Kegiatan / Proyek</div>
+            <div class="keu-form-row">
+              <input type="text" id="keu_p_nama" placeholder="Nama Kegiatan"/>
+              <input type="date" id="keu_p_tanggal"/>
+              <input type="number" id="keu_p_anggaran" placeholder="Anggaran (Rp)"/>
+              <select id="keu_p_status">
+                <option value="aktif">Aktif</option>
+                <option value="selesai">Selesai</option>
+                <option value="batal">Dibatalkan</option>
+              </select>
+              <input type="text" id="keu_p_penanggung" placeholder="Penanggung Jawab"/>
+            </div>
+            <button class="ksu" onclick="keuAddProyek()">+ Tambah Kegiatan</button>
+          </div>
+          <div class="keu-panel">
+            <div class="keu-panel-title">Daftar Kegiatan</div>
+            <div class="ktw">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nama Kegiatan</th><th>Tanggal</th><th>PJ</th>
+                    <th>Anggaran</th><th>Realisasi</th><th>Sisa</th><th>Status</th><th></th>
+                  </tr>
+                </thead>
+                <tbody id="keu_proyekTable"><tr><td colspan="8" class="keu-empty">Belum ada kegiatan.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── TAB: LAPORAN ── -->
+        <div class="keu-tc" id="keutab-laporan">
+          <div class="keu-grid2">
+            <div class="keu-panel">
+              <div class="keu-panel-title">Arus Kas Bulanan</div>
+              <div class="keu-chart-wrap"><canvas id="keu_chartArus"></canvas></div>
+            </div>
+            <div class="keu-panel">
+              <div class="keu-panel-title">Distribusi Pengeluaran per Kategori</div>
+              <div class="keu-chart-wrap"><canvas id="keu_chartKategori"></canvas></div>
+            </div>
+          </div>
+          <div class="keu-grid2">
+            <div class="keu-panel">
+              <div class="keu-panel-title">Realisasi per Kegiatan</div>
+              <div class="keu-chart-wrap"><canvas id="keu_chartProyek"></canvas></div>
+            </div>
+            <div class="keu-panel">
+              <div class="keu-panel-title">Ringkasan Laporan</div>
+              <div id="keu_laporanRingkasan" style="font-size:13px;line-height:1.9"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── TAB: RAB ── -->
+        <div class="keu-tc" id="keutab-anggaran">
+          <div class="keu-panel">
+            <div class="keu-panel-title">+ Tambah Item RAB (Rencana Anggaran Biaya)</div>
+            <div class="keu-form-row">
+              <input type="text" id="keu_rab_uraian" placeholder="Uraian Kegiatan"/>
+              <select id="keu_rab_proyek">
+                <option value="">— Pilih Kegiatan —</option>
+              </select>
+              <input type="number" id="keu_rab_volume" placeholder="Volume"/>
+              <input type="text" id="keu_rab_satuan" placeholder="Satuan (org/pcs/kali...)"/>
+              <input type="number" id="keu_rab_harga" placeholder="Harga Satuan (Rp)"/>
+            </div>
+            <button class="ksu" onclick="keuAddRAB()">+ Tambah</button>
+          </div>
+          <div class="keu-panel">
+            <div class="keu-panel-title">Tabel RAB</div>
+            <div class="ktw">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Uraian</th><th>Kegiatan</th>
+                    <th style="text-align:right">Vol</th><th>Satuan</th>
+                    <th style="text-align:right">Harga Satuan</th>
+                    <th style="text-align:right">Total</th><th></th>
+                  </tr>
+                </thead>
+                <tbody id="keu_rabTable"><tr><td colspan="7" class="keu-empty">Belum ada item RAB.</td></tr></tbody>
+              </table>
+              <div style="text-align:right;font-weight:700;padding:10px;font-size:14px">
+                Total RAB: <span id="keu_rabTotal" style="color:#1e3a5f">Rp 0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.keu-body -->
+    </div><!-- /#keuDash -->
+  </div><!-- /#panel-keuangan -->
+
+  <!-- TAB: LAPORAN KEGIATAN -->
+  <div class="tab-panel" id="panel-kegiatan">
+    <div class="dokumen-grid">
+      <div class="dok-card">
+        <div class="dok-icon">📋</div>
+        <div class="dok-title">Laporan Seminar Nasional Pendidikan 2025</div>
+        <div class="dok-sub">Divisi Akademik · Maret 2025</div>
+        <div class="dok-footer">
+          <span class="dok-size">PDF · 2.4 MB</span>
+          <span class="dok-download">⬇ Unduh</span>
+        </div>
+      </div>
+      <div class="dok-card">
+        <div class="dok-icon">📋</div>
+        <div class="dok-title">Laporan Bakti Sosial Progresio</div>
+        <div class="dok-sub">Divisi Sosmas · Maret 2025</div>
+        <div class="dok-footer">
+          <span class="dok-size">PDF · 1.8 MB</span>
+          <span class="dok-download">⬇ Unduh</span>
+        </div>
+      </div>
+      <div class="dok-card">
+        <div class="dok-icon">📋</div>
+        <div class="dok-title">Laporan Gerakan Literasi FKIP</div>
+        <div class="dok-sub">Divisi Akademik · Apr 2025</div>
+        <div class="dok-footer">
+          <span class="dok-size">PDF · 1.2 MB</span>
+          <span class="dok-download">⬇ Unduh</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: NOTULENSI -->
+  <div class="tab-panel" id="panel-notulen">
+    <div class="notulen-list">
+      <div class="notulen-item">
+        <div class="notulen-icon">📝</div>
+        <div class="notulen-info">
+          <h4>Notulensi Rapat Koordinasi Bulanan — April 2025</h4>
+          <p>Jumat, 12 April 2025 · Ruang Rapat FKIP · Dihadiri 38 pengurus</p>
+        </div>
+        <span class="notulen-dl">⬇ Unduh PDF</span>
+      </div>
+      <div class="notulen-item">
+        <div class="notulen-icon">📝</div>
+        <div class="notulen-info">
+          <h4>Notulensi Rapat Koordinasi Bulanan — Maret 2025</h4>
+          <p>Jumat, 14 Maret 2025 · Ruang Rapat FKIP · Dihadiri 42 pengurus</p>
+        </div>
+        <span class="notulen-dl">⬇ Unduh PDF</span>
+      </div>
+      <div class="notulen-item">
+        <div class="notulen-icon">📝</div>
+        <div class="notulen-info">
+          <h4>Notulensi Rapat Pleno — Penyusunan Proker 2025</h4>
+          <p>Sabtu, 11 Januari 2025 · Aula FKIP · Seluruh pengurus</p>
+        </div>
+        <span class="notulen-dl">⬇ Unduh PDF</span>
+      </div>
+      <div class="notulen-item">
+        <div class="notulen-icon">📝</div>
+        <div class="notulen-info">
+          <h4>Notulensi Rapat Perdana Kabinet Progresio</h4>
+          <p>Senin, 6 Januari 2025 · Sekretariat BEM FKIP</p>
+        </div>
+        <span class="notulen-dl">⬇ Unduh PDF</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: DOKUMEN RESMI -->
+  <div class="tab-panel" id="panel-dokresmi">
+    <div class="dokumen-grid">
+      <div class="dok-card">
+        <div class="dok-icon">🏛</div>
+        <div class="dok-title">AD/ART BEM FKIP UNUC</div>
+        <div class="dok-sub">Anggaran Dasar & Anggaran Rumah Tangga</div>
+        <div class="dok-footer">
+          <span class="dok-size">PDF · 0.9 MB</span>
+          <span class="dok-download">⬇ Unduh</span>
+        </div>
+      </div>
+      <div class="dok-card">
+        <div class="dok-icon">📜</div>
+        <div class="dok-title">SK Kepengurusan Kabinet Progresio</div>
+        <div class="dok-sub">Surat Keputusan Dekan FKIP · Januari 2025</div>
+        <div class="dok-footer">
+          <span class="dok-size">PDF · 0.4 MB</span>
+          <span class="dok-download">⬇ Unduh</span>
+        </div>
+      </div>
+      <div class="dok-card">
+        <div class="dok-icon">📊</div>
+        <div class="dok-title">GBHK BEM FKIP 2025</div>
+        <div class="dok-sub">Garis Besar Haluan Kerja</div>
+        <div class="dok-footer">
+          <span class="dok-size">PDF · 1.1 MB</span>
+          <span class="dok-download">⬇ Unduh</span>
+        </div>
+      </div>
+      <div class="dok-card">
+        <div class="dok-icon">📋</div>
+        <div class="dok-title">SOP Pengajuan Dana Kegiatan</div>
+        <div class="dok-sub">Prosedur standar pengajuan anggaran</div>
+        <div class="dok-footer">
+          <span class="dok-size">PDF · 0.5 MB</span>
+          <span class="dok-download">⬇ Unduh</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /.container -->
+
+<div id="footer-placeholder"></div>
+<script src="assets/main.js"></script>
+<script>
+/* ─── DOK TABS ─── */
+function switchDokTab(btn, panel) {
+  document.querySelectorAll('.dok-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + panel).classList.add('active');
+  if (panel === 'keuangan') keuRenderCharts();
+}
+
+/* ═══════════════════════════════════════════════════
+   KEUANGAN DASHBOARD — semua fungsi prefix "keu"
+   Data sharing pakai localStorage key: org_keuangan
+   (sama dengan standalone dashboard)
+   ═══════════════════════════════════════════════════ */
+let keuState = {
+  org: 'BEM FKIP Kabinet Progresio',
+  anggaran: 0,
+  transaksi: [],
+  proyek: [],
+  rab: [],
+  filterBulan: 0,
+  filterTahun: 0
+};
+let keuChartArus = null, keuChartKategori = null, keuChartProyek = null;
+const KEU_BULAN = ['','Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+
+function keuInit() {
+  const saved = localStorage.getItem('org_keuangan');
+  if (saved) keuState = JSON.parse(saved);
+
+  const yr = new Date().getFullYear();
+  const sel = document.getElementById('keu_filterTahun');
+  for (let y = yr - 3; y <= yr + 2; y++) {
+    const o = document.createElement('option');
+    o.value = y; o.text = y;
+    if (y === yr) o.selected = true;
+    sel.appendChild(o);
+  }
+
+  document.getElementById('keu_filterBulan').value = keuState.filterBulan || 0;
+  document.getElementById('keu_filterTahun').value = keuState.filterTahun || yr;
+  document.getElementById('keu_anggaranInput').value = keuState.anggaran || '';
+  document.getElementById('keu_t_tanggal').value = new Date().toISOString().split('T')[0];
+  keuRenderAll();
+}
+
+function keuSave() {
+  localStorage.setItem('org_keuangan', JSON.stringify(keuState));
+}
+
+function keuApplyFilters() {
+  keuState.filterBulan = parseInt(document.getElementById('keu_filterBulan').value);
+  keuState.filterTahun = parseInt(document.getElementById('keu_filterTahun').value);
+  keuSave();
+  keuRenderAll();
+}
+
+function keuGetFiltered() {
+  return keuState.transaksi.filter(t => {
+    const d = new Date(t.tanggal);
+    const bMatch = keuState.filterBulan === 0 || (d.getMonth() + 1) === keuState.filterBulan;
+    const yMatch = keuState.filterTahun === 0 || d.getFullYear() === keuState.filterTahun;
+    return bMatch && yMatch;
+  });
+}
+
+function keuRp(n) { return 'Rp ' + Math.abs(n).toLocaleString('id-ID'); }
+function keuRpShort(n) {
+  if (Math.abs(n) >= 1e9) return 'Rp ' + (n/1e9).toFixed(1) + 'M';
+  if (Math.abs(n) >= 1e6) return 'Rp ' + (n/1e6).toFixed(1) + 'Jt';
+  return 'Rp ' + n.toLocaleString('id-ID');
+}
+
+function keuUpdateAnggaran() {
+  keuState.anggaran = parseFloat(document.getElementById('keu_anggaranInput').value) || 0;
+  document.getElementById('keu_anggaranDisplay').textContent = keuRp(keuState.anggaran);
+  keuSave();
+  keuUpdateCards();
+}
+
+/* ── TRANSAKSI ── */
+function keuAddTransaksi() {
+  const t = {
+    id: Date.now(),
+    tanggal: document.getElementById('keu_t_tanggal').value,
+    jenis: document.getElementById('keu_t_jenis').value,
+    kategori: document.getElementById('keu_t_kategori').value,
+    deskripsi: document.getElementById('keu_t_deskripsi').value,
+    jumlah: parseFloat(document.getElementById('keu_t_jumlah').value) || 0,
+    proyekId: document.getElementById('keu_t_proyek').value
+  };
+  if (!t.tanggal || !t.jumlah) { alert('Tanggal dan jumlah wajib diisi!'); return; }
+  keuState.transaksi.push(t);
+  keuSave(); keuRenderAll(); keuClearTransaksiForm();
+}
+function keuDeleteTransaksi(id) {
+  if (!confirm('Hapus transaksi ini?')) return;
+  keuState.transaksi = keuState.transaksi.filter(t => t.id !== id);
+  keuSave(); keuRenderAll();
+}
+function keuClearTransaksiForm() {
+  document.getElementById('keu_t_deskripsi').value = '';
+  document.getElementById('keu_t_jumlah').value = '';
+  document.getElementById('keu_t_tanggal').value = new Date().toISOString().split('T')[0];
+}
+
+/* ── PROYEK ── */
+function keuAddProyek() {
+  const p = {
+    id: Date.now(),
+    nama: document.getElementById('keu_p_nama').value,
+    tanggal: document.getElementById('keu_p_tanggal').value,
+    anggaran: parseFloat(document.getElementById('keu_p_anggaran').value) || 0,
+    status: document.getElementById('keu_p_status').value,
+    pj: document.getElementById('keu_p_penanggung').value
+  };
+  if (!p.nama) { alert('Nama kegiatan wajib diisi!'); return; }
+  keuState.proyek.push(p);
+  keuSave(); keuRenderAll();
+  ['keu_p_nama','keu_p_tanggal','keu_p_anggaran','keu_p_penanggung'].forEach(id => document.getElementById(id).value = '');
+}
+function keuDeleteProyek(id) {
+  if (!confirm('Hapus kegiatan ini?')) return;
+  keuState.proyek = keuState.proyek.filter(p => p.id !== id);
+  keuSave(); keuRenderAll();
+}
+
+/* ── RAB ── */
+function keuAddRAB() {
+  const vol = parseFloat(document.getElementById('keu_rab_volume').value) || 0;
+  const harga = parseFloat(document.getElementById('keu_rab_harga').value) || 0;
+  const r = {
+    id: Date.now(),
+    uraian: document.getElementById('keu_rab_uraian').value,
+    proyekId: document.getElementById('keu_rab_proyek').value,
+    volume: vol,
+    satuan: document.getElementById('keu_rab_satuan').value,
+    harga: harga,
+    total: vol * harga
+  };
+  if (!r.uraian) { alert('Uraian wajib diisi!'); return; }
+  keuState.rab.push(r);
+  keuSave(); keuRenderAll();
+  ['keu_rab_uraian','keu_rab_volume','keu_rab_satuan','keu_rab_harga'].forEach(id => document.getElementById(id).value = '');
+}
+function keuDeleteRAB(id) {
+  keuState.rab = keuState.rab.filter(r => r.id !== id);
+  keuSave(); keuRenderAll();
+}
+
+/* ── RENDER ALL ── */
+function keuRenderAll() {
+  keuUpdateProyekSelects();
+  keuUpdateCards();
+  keuRenderTransaksi();
+  keuRenderProyek();
+  keuRenderRAB();
+  keuRenderLaporan();
+}
+
+function keuUpdateProyekSelects() {
+  ['keu_t_proyek','keu_rab_proyek'].forEach(id => {
+    const sel = document.getElementById(id);
+    const cur = sel.value;
+    sel.innerHTML = id === 'keu_t_proyek'
+      ? '<option value="">— Tidak ada kegiatan —</option>'
+      : '<option value="">— Pilih Kegiatan —</option>';
+    keuState.proyek.forEach(p => {
+      const o = document.createElement('option');
+      o.value = p.id; o.text = p.nama;
+      sel.appendChild(o);
+    });
+    sel.value = cur;
+  });
+}
+
+function keuUpdateCards() {
+  const filtered = keuGetFiltered();
+  const masuk = filtered.filter(t => t.jenis === 'pemasukan');
+  const keluar = filtered.filter(t => t.jenis === 'pengeluaran');
+  const totalIn = masuk.reduce((s, t) => s + t.jumlah, 0);
+  const totalOut = keluar.reduce((s, t) => s + t.jumlah, 0);
+  const saldo = totalIn - totalOut;
+
+  document.getElementById('keu_saldoMain').textContent = keuRp(saldo);
+  document.getElementById('keu_saldoMain').style.color = saldo < 0 ? '#fca5a5' : '#fff';
+  document.getElementById('keu_totalPemasukan').textContent = keuRp(totalIn);
+  document.getElementById('keu_totalPengeluaran').textContent = keuRp(totalOut);
+  document.getElementById('keu_cntPemasukan').textContent = masuk.length + ' transaksi';
+  document.getElementById('keu_cntPengeluaran').textContent = keluar.length + ' transaksi';
+  document.getElementById('keu_anggaranDisplay').textContent = keuRp(keuState.anggaran);
+
+  const pct = keuState.anggaran > 0 ? Math.min((totalOut / keuState.anggaran) * 100, 100) : 0;
+  document.getElementById('keu_realisasiPct').textContent = pct.toFixed(1) + '%';
+  const fill = document.getElementById('keu_realisasiFill');
+  fill.style.width = pct + '%';
+  fill.className = 'kpfill' + (pct > 90 ? ' red' : pct > 70 ? ' amber' : '');
+
+  const aktif = keuState.proyek.filter(p => p.status === 'aktif').length;
+  const selesai = keuState.proyek.filter(p => p.status === 'selesai').length;
+  document.getElementById('keu_totalProyek').textContent = keuState.proyek.length;
+  document.getElementById('keu_subProyek').textContent = selesai + ' selesai, ' + aktif + ' aktif';
+
+  const bLabel = keuState.filterBulan > 0
+    ? KEU_BULAN[keuState.filterBulan] + ' ' + keuState.filterTahun : 'Semua periode';
+  document.getElementById('keu_periodLabel').textContent = bLabel;
+}
+
+function keuRenderTransaksi() {
+  const tbody = document.getElementById('keu_transaksiTable');
+  const filtered = keuGetFiltered().slice().reverse();
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="keu-empty">Belum ada transaksi untuk periode ini.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map(t => {
+    const p = keuState.proyek.find(x => x.id == t.proyekId);
+    return `<tr>
+      <td>${t.tanggal}</td>
+      <td><span class="kb ${t.jenis==='pemasukan'?'kb-g':'kb-r'}">${t.jenis}</span></td>
+      <td>${t.kategori}</td>
+      <td>${t.deskripsi||'—'}</td>
+      <td>${p ? p.nama : '—'}</td>
+      <td style="text-align:right;font-weight:600;color:${t.jenis==='pemasukan'?'#16a34a':'#dc2626'}">${t.jenis==='pemasukan'?'+':'-'} ${keuRp(t.jumlah)}</td>
+      <td><button class="kdel" onclick="keuDeleteTransaksi(${t.id})">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function keuRenderProyek() {
+  const tbody = document.getElementById('keu_proyekTable');
+  if (!keuState.proyek.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="keu-empty">Belum ada kegiatan.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = keuState.proyek.map(p => {
+    const realisasi = keuState.transaksi
+      .filter(t => t.proyekId == p.id && t.jenis === 'pengeluaran')
+      .reduce((s, t) => s + t.jumlah, 0);
+    const sisa = p.anggaran - realisasi;
+    const sb = p.status === 'aktif' ? 'kb-b' : p.status === 'selesai' ? 'kb-g' : 'kb-r';
+    return `<tr>
+      <td style="font-weight:600">${p.nama}</td>
+      <td>${p.tanggal||'—'}</td>
+      <td>${p.pj||'—'}</td>
+      <td>${keuRp(p.anggaran)}</td>
+      <td style="color:#dc2626">${keuRp(realisasi)}</td>
+      <td style="color:${sisa<0?'#dc2626':'#16a34a'};font-weight:600">${sisa<0?'- ':''} ${keuRp(Math.abs(sisa))}</td>
+      <td><span class="kb ${sb}">${p.status}</span></td>
+      <td><button class="kdel" onclick="keuDeleteProyek(${p.id})">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function keuRenderRAB() {
+  const tbody = document.getElementById('keu_rabTable');
+  const totalRAB = keuState.rab.reduce((s, r) => s + r.total, 0);
+  document.getElementById('keu_rabTotal').textContent = keuRp(totalRAB);
+  if (!keuState.rab.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="keu-empty">Belum ada item RAB.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = keuState.rab.map(r => {
+    const p = keuState.proyek.find(x => x.id == r.proyekId);
+    return `<tr>
+      <td>${r.uraian}</td>
+      <td>${p ? p.nama : '—'}</td>
+      <td style="text-align:right">${r.volume}</td>
+      <td>${r.satuan||'—'}</td>
+      <td style="text-align:right">${keuRp(r.harga)}</td>
+      <td style="text-align:right;font-weight:600">${keuRp(r.total)}</td>
+      <td><button class="kdel" onclick="keuDeleteRAB(${r.id})">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function keuRenderCharts() {
+  keuRenderChartArus();
+  keuRenderChartKategori();
+  keuRenderChartProyek();
+}
+
+function keuRenderChartArus() {
+  const byMonth = {};
+  keuState.transaksi.forEach(t => {
+    const d = new Date(t.tanggal);
+    const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    if (!byMonth[key]) byMonth[key] = {in:0, out:0};
+    if (t.jenis === 'pemasukan') byMonth[key].in += t.jumlah;
+    else byMonth[key].out += t.jumlah;
+  });
+  const keys = Object.keys(byMonth).sort();
+  const labels = keys.map(k => { const [y,m] = k.split('-'); return KEU_BULAN[parseInt(m)] + ' ' + y.slice(2); });
+  const dataIn = keys.map(k => byMonth[k].in);
+  const dataOut = keys.map(k => byMonth[k].out);
+
+  if (keuChartArus) keuChartArus.destroy();
+  keuChartArus = new Chart(document.getElementById('keu_chartArus'), {
+    type: 'bar',
+    data: {
+      labels: labels.length ? labels : ['—'],
+      datasets: [
+        { label: 'Pemasukan', data: dataIn, backgroundColor: '#86efac' },
+        { label: 'Pengeluaran', data: dataOut, backgroundColor: '#fca5a5' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+      scales: { y: { ticks: { callback: v => keuRpShort(v), font: { size: 10 } } } }
+    }
+  });
+}
+
+function keuRenderChartKategori() {
+  const byCat = {};
+  keuGetFiltered().filter(t => t.jenis === 'pengeluaran').forEach(t => {
+    byCat[t.kategori] = (byCat[t.kategori] || 0) + t.jumlah;
+  });
+  const labels = Object.keys(byCat);
+  const data = labels.map(k => byCat[k]);
+  const colors = ['#6366f1','#ec4899','#f59e0b','#10b981','#3b82f6','#8b5cf6','#f97316','#14b8a6','#ef4444','#84cc16','#06b6d4'];
+
+  if (keuChartKategori) keuChartKategori.destroy();
+  keuChartKategori = new Chart(document.getElementById('keu_chartKategori'), {
+    type: 'doughnut',
+    data: {
+      labels: labels.length ? labels : ['Belum ada data'],
+      datasets: [{ data: data.length ? data : [1], backgroundColor: colors }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } }
+    }
+  });
+}
+
+function keuRenderChartProyek() {
+  const labels = keuState.proyek.map(p => p.nama);
+  const anggarans = keuState.proyek.map(p => p.anggaran);
+  const realisasis = keuState.proyek.map(p =>
+    keuState.transaksi
+      .filter(t => t.proyekId == p.id && t.jenis === 'pengeluaran')
+      .reduce((s, t) => s + t.jumlah, 0)
+  );
+
+  if (keuChartProyek) keuChartProyek.destroy();
+  keuChartProyek = new Chart(document.getElementById('keu_chartProyek'), {
+    type: 'bar',
+    data: {
+      labels: labels.length ? labels : ['—'],
+      datasets: [
+        { label: 'Anggaran', data: anggarans, backgroundColor: '#bfdbfe' },
+        { label: 'Realisasi', data: realisasis, backgroundColor: '#fca5a5' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+      scales: { x: { ticks: { callback: v => keuRpShort(v), font: { size: 10 } } } }
+    }
+  });
+}
+
+function keuRenderLaporan() {
+  const filtered = keuGetFiltered();
+  const totalIn = filtered.filter(t => t.jenis==='pemasukan').reduce((s,t)=>s+t.jumlah,0);
+  const totalOut = filtered.filter(t => t.jenis==='pengeluaran').reduce((s,t)=>s+t.jumlah,0);
+  const saldo = totalIn - totalOut;
+  const pct = keuState.anggaran > 0 ? ((totalOut / keuState.anggaran) * 100).toFixed(1) : 'N/A';
+  const rabTotal = keuState.rab.reduce((s,r)=>s+r.total,0);
+
+  document.getElementById('keu_laporanRingkasan').innerHTML = `
+    <table style="width:100%;font-size:13px">
+      <tr><td style="color:#57606a">Total Pemasukan</td><td style="text-align:right;color:#16a34a;font-weight:600">${keuRp(totalIn)}</td></tr>
+      <tr><td style="color:#57606a">Total Pengeluaran</td><td style="text-align:right;color:#dc2626;font-weight:600">${keuRp(totalOut)}</td></tr>
+      <tr style="border-top:2px solid #e5e7eb"><td style="font-weight:700">Saldo Bersih</td><td style="text-align:right;font-weight:800;color:${saldo<0?'#dc2626':'#1e3a5f'}">${keuRp(saldo)}</td></tr>
+      <tr><td colspan="2" style="padding:6px 0"></td></tr>
+      <tr><td style="color:#57606a">Anggaran Dasar</td><td style="text-align:right">${keuRp(keuState.anggaran)}</td></tr>
+      <tr><td style="color:#57606a">Realisasi Anggaran</td><td style="text-align:right">${pct}%</td></tr>
+      <tr><td style="color:#57606a">Total RAB</td><td style="text-align:right">${keuRp(rabTotal)}</td></tr>
+      <tr><td colspan="2" style="padding:6px 0"></td></tr>
+      <tr><td style="color:#57606a">Jml Kegiatan</td><td style="text-align:right">${keuState.proyek.length}</td></tr>
+      <tr><td style="color:#57606a">Jml Transaksi</td><td style="text-align:right">${filtered.length}</td></tr>
+    </table>
+  `;
+}
+
+/* ── INNER TABS ── */
+function keuSwitchTab(name, btn) {
+  document.querySelectorAll('#keuDash .keu-tc').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('#keuDash .keu-tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('keutab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'laporan') keuRenderCharts();
+}
+
+/* ── EXPORT CSV ── */
+function keuExportCSV() {
+  const rows = [['Tanggal','Jenis','Kategori','Deskripsi','Kegiatan','Jumlah']];
+  keuState.transaksi.forEach(t => {
+    const p = keuState.proyek.find(x => x.id == t.proyekId);
+    rows.push([t.tanggal, t.jenis, t.kategori, t.deskripsi, p ? p.nama : '', t.jumlah]);
+  });
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'keuangan_bem_fkip.csv';
+  a.click();
+}
+
+/* ── PRINT ── */
+function keuPrint() { window.print(); }
+
+/* ── BOOT ── */
+keuInit();
+</script>
+</body>
+</html>

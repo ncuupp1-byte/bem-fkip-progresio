@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Data Pengurus — Admin BEM FKIP</title>
+<script src="../assets/data.js"></script>
+<link rel="stylesheet" href="admin-shared.css"/>
+</head>
+<body>
+<div id="app"></div>
+<script src="admin-ui.js"></script>
+<script>
+const user = BEM.requireAuth('pengurus');
+if (!user) throw '';
+initAdminShell(user, 'pengurus', 'Data Pengurus');
+
+let data = BEM.getData('pengurus') || {};
+
+function render() {
+  setContent(`
+    <div style="margin-bottom:20px">
+      <h2 style="font-size:18px;font-weight:800;color:var(--green)">Data Pengurus BEM FKIP</h2>
+      <p style="color:var(--muted);font-size:13px">Periode 2025–2026 · Kabinet Progresio</p>
+    </div>
+
+    <!-- BPH -->
+    <div class="panel" style="margin-bottom:20px">
+      <div class="panel-head">
+        <h3>Badan Pengurus Harian</h3>
+        <button class="btn btn-green" onclick="showBPHForm()">+ Edit / Tambah</button>
+      </div>
+      <div id="bphFormWrap" style="display:none;padding:18px;border-bottom:1px solid var(--border)">
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Edit nama pengurus inti di bawah ini.</p>
+        ${(data.bph||[]).map((b,i) => `
+          <div style="display:grid;grid-template-columns:160px 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center">
+            <div style="font-size:12px;font-weight:600;color:var(--text)">${b.jabatan}</div>
+            <input class="fi" id="bph_nama_${i}" value="${b.nama}" placeholder="Nama..."/>
+            <input class="fi" id="bph_prodi_${i}" value="${b.prodi||''}" placeholder="Prodi/NIM..."/>
+          </div>
+        `).join('')}
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button class="btn btn-green" onclick="saveBPH()">Simpan BPH</button>
+          <button class="btn btn-outline" onclick="document.getElementById('bphFormWrap').style.display='none'">Batal</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead><tr><th>Jabatan</th><th>Nama</th><th>NIM</th><th>Prodi</th></tr></thead>
+          <tbody>
+            ${(data.bph||[]).map(b => `
+              <tr>
+                <td><span class="b b-green">${b.jabatan}</span></td>
+                <td style="font-weight:700">${b.nama}</td>
+                <td style="color:var(--muted)">${b.nim||'—'}</td>
+                <td style="color:var(--muted)">${b.prodi||'—'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DEPARTEMEN -->
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Departemen</h3>
+      </div>
+      <div>
+        ${(data.departemen||[]).map((dept, di) => `
+          <div style="padding:16px 18px;border-bottom:1px solid var(--border)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+              <div>
+                <div style="font-size:14px;font-weight:700;color:var(--green)">${dept.nama}</div>
+                <div style="font-size:13px;color:var(--muted)">Kepala: <strong style="color:var(--text)">${dept.kepala}</strong></div>
+              </div>
+              <button class="btn btn-outline" onclick="editDept(${di})">✏️ Edit</button>
+            </div>
+            <div id="deptForm_${di}" style="display:none;background:var(--green-pale);padding:12px;border-radius:8px;margin-bottom:10px">
+              <div class="fg"><label class="fl">Kepala Departemen</label><input class="fi" id="dk_${di}" value="${dept.kepala}"/></div>
+              <div class="fg"><label class="fl">Anggota (pisahkan dengan koma)</label>
+                <input class="fi" id="da_${di}" value="${(dept.anggota||[]).join(', ')}"/>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-green" onclick="saveDept(${di})">Simpan</button>
+                <button class="btn btn-outline" onclick="document.getElementById('deptForm_${di}').style.display='none'">Batal</button>
+              </div>
+            </div>
+            ${dept.anggota && dept.anggota.length ? `
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                ${dept.anggota.map(a => `<span class="b b-gray">${a}</span>`).join('')}
+              </div>
+            ` : '<span style="font-size:12px;color:var(--muted)">Belum ada anggota terdaftar</span>'}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `);
+}
+
+function showBPHForm() {
+  const w = document.getElementById('bphFormWrap');
+  w.style.display = w.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveBPH() {
+  data.bph = (data.bph||[]).map((b, i) => ({
+    ...b,
+    nama: document.getElementById('bph_nama_' + i).value.trim() || b.nama,
+    prodi: document.getElementById('bph_prodi_' + i).value.trim()
+  }));
+  BEM.setData('pengurus', data);
+  render();
+  alert('Data BPH berhasil disimpan!');
+}
+
+function editDept(di) {
+  document.querySelectorAll('[id^="deptForm_"]').forEach(el => { if (el.id !== 'deptForm_'+di) el.style.display='none'; });
+  const f = document.getElementById('deptForm_' + di);
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveDept(di) {
+  data.departemen[di].kepala = document.getElementById('dk_' + di).value.trim();
+  const raw = document.getElementById('da_' + di).value;
+  data.departemen[di].anggota = raw.split(',').map(s => s.trim()).filter(Boolean);
+  BEM.setData('pengurus', data);
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

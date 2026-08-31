@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Kelola Berita — Admin BEM FKIP</title>
+<script src="../assets/data.js"></script>
+<link rel="stylesheet" href="admin-shared.css"/>
+</head>
+<body>
+<div id="app"></div>
+<script src="admin-ui.js"></script>
+<script>
+const user = BEM.requireAuth('berita');
+if (!user) throw '';
+initAdminShell(user, 'berita', 'Kelola Berita & Pengumuman');
+
+let berita = [];
+
+async function loadBerita() {
+  berita = await BEM.getData('berita') || [];
+  renderBerita();
+}
+
+function renderBerita() {
+  setContent(`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+      <h2 style="font-size:18px;font-weight:800;color:var(--green)">Berita & Pengumuman</h2>
+      <button class="btn btn-green" onclick="showForm()">+ Tambah Berita</button>
+    </div>
+
+    <div class="panel" id="formPanel" style="display:none;margin-bottom:20px">
+      <div class="panel-head"><h3 id="formTitle">Tambah Berita Baru</h3></div>
+      <div class="panel-body">
+        <input type="hidden" id="editId"/>
+        <div class="fg"><label class="fl">Judul *</label><input class="fi" id="f_judul" placeholder="Judul berita..."/></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="fg"><label class="fl">Kategori</label>
+            <select class="fi" id="f_kat">
+              <option>Akademik</option><option>Sosial</option><option>Pengumuman</option>
+              <option>Prestasi</option><option>Advokasi</option><option>Keagamaan</option><option>Umum</option>
+            </select>
+          </div>
+          <div class="fg"><label class="fl">Tanggal</label><input class="fi" type="date" id="f_tgl"/></div>
+        </div>
+        <div class="fg">
+          <label class="fl">Isi Berita * <span style="font-weight:400;color:#9ca3af">(## Judul, > Kutipan, - List)</span></label>
+          <textarea class="fi" id="f_isi" rows="12" placeholder="Tulis isi artikel lengkap di sini..."></textarea>
+        </div>
+        <div class="fg">
+          <label class="fl"><input type="checkbox" id="f_featured"/> Jadikan berita utama (featured)</label>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button class="btn btn-green" onclick="saveBerita()">💾 Simpan</button>
+          <button class="btn btn-outline" onclick="hideForm()">Batal</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Daftar Berita (${berita.length})</h3></div>
+      <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead><tr><th>Judul</th><th>Kategori</th><th>Tanggal</th><th>Featured</th><th>Aksi</th></tr></thead>
+          <tbody>
+            ${berita.length ? berita.map(b => `
+              <tr>
+                <td style="font-weight:600;max-width:240px">${b.judul}</td>
+                <td><span class="b b-green">${b.kategori}</span></td>
+                <td style="color:var(--muted)">${b.tanggal}</td>
+                <td>${b.featured ? '<span class="b b-gold">⭐ Ya</span>' : '<span class="b b-gray">Tidak</span>'}</td>
+                <td>
+                  <button class="btn btn-outline" onclick="editBerita(${b.id})" style="margin-right:4px">✏️ Edit</button>
+                  <button class="btn btn-red" onclick="deleteBerita(${b.id})">🗑</button>
+                </td>
+              </tr>
+            `).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">Belum ada berita.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `);
+  document.getElementById('f_tgl').value = new Date().toISOString().split('T')[0];
+}
+
+function showForm() {
+  document.getElementById('formPanel').style.display = 'block';
+  document.getElementById('editId').value = '';
+  document.getElementById('formTitle').textContent = 'Tambah Berita Baru';
+  document.getElementById('f_judul').value = '';
+  document.getElementById('f_isi').value = '';
+  document.getElementById('f_featured').checked = false;
+}
+function hideForm() { document.getElementById('formPanel').style.display = 'none'; }
+
+function editBerita(id) {
+  const b = berita.find(x => x.id == id);
+  if (!b) return;
+  document.getElementById('formPanel').style.display = 'block';
+  document.getElementById('formTitle').textContent = 'Edit Berita';
+  document.getElementById('editId').value = id;
+  document.getElementById('f_judul').value = b.judul;
+  document.getElementById('f_kat').value = b.kategori;
+  document.getElementById('f_tgl').value = '';
+  document.getElementById('f_isi').value = b.isi;
+  document.getElementById('f_featured').checked = !!b.featured;
+}
+
+async function saveBerita() {
+  const judul = document.getElementById('f_judul').value.trim();
+  const isi   = document.getElementById('f_isi').value.trim();
+  if (!judul || !isi) { alert('Judul dan isi wajib diisi!'); return; }
+  const tglVal = document.getElementById('f_tgl').value;
+  const tgl = tglVal
+    ? new Date(tglVal).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})
+    : new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
+  const editId = document.getElementById('editId').value;
+  const obj = {
+    judul, isi,
+    kategori: document.getElementById('f_kat').value,
+    tanggal: tgl,
+    penulis: user.label,
+    icon: '📰',
+    featured: document.getElementById('f_featured').checked
+  };
+
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = 'Menyimpan...';
+
+  if (editId) {
+    await BEM.updateData('berita', editId, obj);
+  } else {
+    await BEM.insertData('berita', obj);
+  }
+
+  btn.disabled = false; btn.textContent = '💾 Simpan';
+  hideForm();
+  await loadBerita();
+}
+
+async function deleteBerita(id) {
+  if (!confirm('Hapus berita ini?')) return;
+  await BEM.deleteData('berita', id);
+  await loadBerita();
+}
+
+loadBerita();
+</script>
+</body>
+</html>

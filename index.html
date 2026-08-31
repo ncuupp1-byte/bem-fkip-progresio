@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>BEM FKIP — Kabinet Progresio | Universitas Nahdlatul Ulama Cirebon</title>
+<script src="assets/data.js"></script>
+<link rel="stylesheet" href="assets/style.css"/>
+<style>
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-main) 60%, var(--green-mid) 100%);
+  padding: 80px 24px 70px;
+  text-align: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 40%, rgba(212,160,23,.15) 0%, transparent 60%);
+}
+.hero-logos { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 24px; }
+.hero-logos img { height: 80px; width: 80px; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,.3)); }
+.hero-title { font-size: 42px; font-weight: 900; letter-spacing: -.5px; margin-bottom: 8px; }
+.hero-title span { color: var(--gold-light); }
+.hero-subtitle { font-size: 18px; color: rgba(255,255,255,.8); margin-bottom: 6px; }
+.hero-univ { font-size: 14px; color: rgba(255,255,255,.55); margin-bottom: 32px; letter-spacing: .5px; }
+.hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.hero-divider { height: 4px; background: linear-gradient(90deg, transparent, var(--gold-light), transparent); margin: 0; }
+
+/* STATS */
+.stats-bar {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 28px 24px;
+}
+.stats-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+.stat-item { text-align: center; padding: 12px; }
+.stat-num { font-size: 32px; font-weight: 900; color: var(--green-main); line-height: 1; }
+.stat-label { font-size: 12px; color: var(--text-light); margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+
+/* VISI MISI */
+.visi-section { background: var(--green-pale); padding: 56px 24px; }
+.vm-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.vm-box { background: white; border-radius: 14px; padding: 28px; border-left: 4px solid var(--gold-main); }
+.vm-box h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--gold-dark); margin-bottom: 10px; }
+.vm-box p, .vm-box ul { color: var(--text-mid); font-size: 14.5px; line-height: 1.75; }
+.vm-box ul { padding-left: 18px; }
+.vm-box ul li { margin-bottom: 6px; }
+
+/* KEGIATAN TERBARU */
+.kegiatan-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.kegiatan-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; transition: box-shadow .2s, transform .2s; }
+.kegiatan-card:hover { box-shadow: 0 8px 28px var(--shadow); transform: translateY(-3px); }
+.kegiatan-img { height: 160px; background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+.kegiatan-body { padding: 16px; }
+.kegiatan-body h4 { font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; line-height: 1.4; }
+.kegiatan-body p { font-size: 13px; color: var(--text-light); }
+.kegiatan-meta { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 12px; color: var(--text-light); }
+
+/* PROKER HIGHLIGHT */
+.proker-list { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+.proker-item { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; gap: 16px; }
+.proker-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.proker-info { flex: 1; }
+.proker-info h4 { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 3px; }
+.proker-info p { font-size: 12px; color: var(--text-light); }
+.proker-progress { width: 120px; text-align: right; flex-shrink: 0; }
+.proker-pct { font-size: 16px; font-weight: 800; color: var(--green-main); }
+.proker-bar { height: 6px; background: var(--green-light); border-radius: 3px; margin-top: 4px; overflow: hidden; }
+.proker-bar-fill { height: 100%; background: var(--green-main); border-radius: 3px; }
+.proker-bar-fill.gold { background: var(--gold-main); }
+
+/* PENGUMUMAN */
+.pengumuman-list { display: flex; flex-direction: column; gap: 12px; max-width: 860px; margin: 0 auto; }
+.peng-item { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; display: flex; gap: 14px; align-items: flex-start; }
+.peng-date { flex-shrink: 0; text-align: center; background: var(--green-main); color: white; border-radius: 8px; padding: 6px 10px; min-width: 48px; }
+.peng-date .day { font-size: 20px; font-weight: 900; line-height: 1; }
+.peng-date .mon { font-size: 11px; font-weight: 600; text-transform: uppercase; }
+.peng-body h4 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.peng-body p { font-size: 13px; color: var(--text-light); }
+
+@media(max-width:768px) {
+  .hero-title { font-size: 28px; }
+  .stats-inner { grid-template-columns: repeat(2,1fr); }
+  .vm-grid { grid-template-columns: 1fr; }
+  .kegiatan-grid { grid-template-columns: 1fr; }
+  .proker-item { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-logos">
+    <img id="hero-logo-bem" alt="BEM FKIP"/>
+    <img id="hero-logo-kab" alt="Kabinet Progresio"/>
+  </div>
+  <div class="hero-title">BEM FKIP <span>Progresio</span></div>
+  <div class="hero-subtitle">Badan Eksekutif Mahasiswa — Fakultas Keguruan dan Ilmu Pendidikan</div>
+  <div class="hero-univ">Universitas Nahdlatul Ulama Cirebon</div>
+  <div class="hero-cta">
+    <a href="tentang.html" class="btn btn-gold">Tentang Kami</a>
+    <a href="kegiatan.html" class="btn btn-outline" style="border-color:rgba(255,255,255,.6);color:white">Lihat Kegiatan</a>
+  </div>
+</section>
+<div class="hero-divider"></div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-num">12</div>
+      <div class="stat-label">Divisi Aktif</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">48+</div>
+      <div class="stat-label">Pengurus</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">24</div>
+      <div class="stat-label">Program Kerja</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">2025</div>
+      <div class="stat-label">Periode Kepengurusan</div>
+    </div>
+  </div>
+</div>
+
+<!-- VISI MISI -->
+<section class="visi-section">
+  <div style="max-width:1100px;margin:0 auto 28px;text-align:center">
+    <h2 style="font-size:26px;font-weight:800;color:var(--green-main);margin-bottom:6px">Visi & Misi</h2>
+    <div style="width:48px;height:3px;background:var(--gold-main);border-radius:2px;margin:0 auto"></div>
+  </div>
+  <div class="vm-grid">
+    <div class="vm-box">
+      <h3>Visi</h3>
+      <p>Menjadikan BEM Fakultas sebagai poros koordinasi yang integratif dan suportif demi terciptanya sinergi organisasi mahasiswa yang harmonis.</p>
+    </div>
+    <div class="vm-box">
+      <h3>Misi</h3>
+      <ul>
+        <li><strong>Sinkronisasi Agenda Fakultas</strong> — Menyusun kalender kegiatan bersama untuk menghindari tumpang tindih jadwal antar-Himpunan Mahasiswa.</li>
+        <li><strong>Forum Komunikasi Berkala</strong> — Rapat koordinasi rutin sebagai ruang evaluasi, penyerapan aspirasi, dan penyelarasan arah gerak organisasi.</li>
+        <li><strong>Kolaborasi Strategis Lintas Jurusan</strong> — Menginisiasi program kerja bersama yang melibatkan partisipasi aktif antar-Himpunan Mahasiswa di tingkat fakultas.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- KEGIATAN TERBARU -->
+<section style="padding: 56px 24px; background: var(--cream);">
+  <div class="container" style="padding:0">
+    <div class="section-heading">
+      <h2>Kegiatan Terbaru</h2>
+      <p>Program dan kegiatan BEM FKIP Kabinet Progresio</p>
+      <div class="line"></div>
+    </div>
+    <div class="kegiatan-grid">
+      <div class="kegiatan-card">
+        <div class="kegiatan-img">🎓</div>
+        <div class="kegiatan-body">
+          <span class="badge badge-green">Akademik</span>
+          <h4 style="margin-top:8px">Seminar Nasional Pendidikan 2025</h4>
+          <p>Seminar bertema "Transformasi Pendidikan di Era Digital" bersama pakar pendidikan nasional.</p>
+          <div class="kegiatan-meta">📅 15 Maret 2025 &nbsp;·&nbsp; 📍 Aula UNUC</div>
+        </div>
+      </div>
+      <div class="kegiatan-card">
+        <div class="kegiatan-img">🤝</div>
+        <div class="kegiatan-body">
+          <span class="badge badge-gold">Sosial</span>
+          <h4 style="margin-top:8px">Bakti Sosial Progresio</h4>
+          <p>Kegiatan baksos di desa binaan FKIP — pembagian alat tulis dan bimbingan belajar anak-anak.</p>
+          <div class="kegiatan-meta">📅 2 Maret 2025 &nbsp;·&nbsp; 📍 Desa Sumber</div>
+        </div>
+      </div>
+      <div class="kegiatan-card">
+        <div class="kegiatan-img">🏆</div>
+        <div class="kegiatan-body">
+          <span class="badge badge-green">Kompetisi</span>
+          <h4 style="margin-top:8px">Olimpiade Mahasiswa FKIP</h4>
+          <p>Kompetisi akademik antar program studi di lingkungan FKIP untuk memupuk semangat berprestasi.</p>
+          <div class="kegiatan-meta">📅 20 April 2025 &nbsp;·&nbsp; 📍 Kampus UNUC</div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:28px">
+      <a href="kegiatan.html" class="btn btn-outline">Lihat Semua Kegiatan →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAM KERJA HIGHLIGHT -->
+<section style="padding: 56px 24px; background: white; border-top: 1px solid var(--border);">
+  <div class="container" style="padding:0">
+    <div class="section-heading">
+      <h2>Highlight Program Kerja</h2>
+      <p>Progres program kerja unggulan Kabinet Progresio</p>
+      <div class="line"></div>
+    </div>
+    <div class="proker-list">
+      <div class="proker-item">
+        <div class="proker-icon">📚</div>
+        <div class="proker-info">
+          <h4>Gerakan Literasi FKIP</h4>
+          <p>Divisi Akademik · Q1–Q2 2025</p>
+        </div>
+        <div class="proker-progress">
+          <div class="proker-pct">80%</div>
+          <div class="proker-bar"><div class="proker-bar-fill" style="width:80%"></div></div>
+        </div>
+      </div>
+      <div class="proker-item">
+        <div class="proker-icon">🌱</div>
+        <div class="proker-info">
+          <h4>Pengabdian Masyarakat Terpadu</h4>
+          <p>Divisi Sosial Masyarakat · Q1–Q3 2025</p>
+        </div>
+        <div class="proker-progress">
+          <div class="proker-pct">65%</div>
+          <div class="proker-bar"><div class="proker-bar-fill" style="width:65%"></div></div>
+        </div>
+      </div>
+      <div class="proker-item">
+        <div class="proker-icon">💡</div>
+        <div class="proker-info">
+          <h4>Workshop Keterampilan Digital</h4>
+          <p>Divisi PSDM · Q2 2025</p>
+        </div>
+        <div class="proker-progress">
+          <div class="proker-pct" style="color:var(--gold-dark)">40%</div>
+          <div class="proker-bar"><div class="proker-bar-fill gold" style="width:40%"></div></div>
+        </div>
+      </div>
+      <div class="proker-item">
+        <div class="proker-icon">🎭</div>
+        <div class="proker-info">
+          <h4>Festival Seni & Budaya FKIP</h4>
+          <p>Divisi Minat Bakat · Q3 2025</p>
+        </div>
+        <div class="proker-progress">
+          <div class="proker-pct" style="color:var(--gold-dark)">25%</div>
+          <div class="proker-bar"><div class="proker-bar-fill gold" style="width:25%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:28px">
+      <a href="kegiatan.html" class="btn btn-primary">Lihat Semua Proker →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PENGUMUMAN -->
+<section style="padding: 48px 24px; background: var(--green-pale); border-top: 1px solid var(--border);">
+  <div class="container" style="padding:0">
+    <div class="section-heading">
+      <h2>Pengumuman Terbaru</h2>
+      <p>Info dan pengumuman dari BEM FKIP</p>
+      <div class="line"></div>
+    </div>
+    <div class="pengumuman-list">
+      <div class="peng-item">
+        <div class="peng-date"><div class="day">28</div><div class="mon">Apr</div></div>
+        <div class="peng-body">
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px">
+            <h4>Open Recruitment Panitia Festival Seni 2025</h4>
+            <span class="badge badge-gold">Baru</span>
+          </div>
+          <p>Dibuka pendaftaran untuk mahasiswa FKIP aktif. Formulir tersedia di sekretariat BEM FKIP.</p>
+        </div>
+      </div>
+      <div class="peng-item">
+        <div class="peng-date"><div class="day">20</div><div class="mon">Apr</div></div>
+        <div class="peng-body">
+          <h4>Hasil Seleksi Delegasi Olimpiade Mahasiswa</h4>
+          <p>Pengumuman peserta yang lolos seleksi dapat dilihat di papan pengumuman FKIP dan halaman berita website ini.</p>
+        </div>
+      </div>
+      <div class="peng-item">
+        <div class="peng-date"><div class="day">10</div><div class="mon">Apr</div></div>
+        <div class="peng-body">
+          <h4>Rapat Koordinasi Bulanan — April 2025</h4>
+          <p>Rapat koordinasi seluruh pengurus Kabinet Progresio dijadwalkan Jumat, 12 April 2025 pukul 15.00 WIB di Ruang Rapat FKIP.</p>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:28px">
+      <a href="berita.html" class="btn btn-outline">Lihat Semua Berita →</a>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+<script src="assets/main.js"></script>
+<script>
+// Inject logos into hero after main.js loads LOGO_BEM/LOGO_KAB
+document.getElementById('hero-logo-bem').src = LOGO_BEM;
+document.getElementById('hero-logo-kab').src = LOGO_KAB;
+</script>
+</body>
+</html>

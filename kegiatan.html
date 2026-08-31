@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Kegiatan & Proker — BEM FKIP Kabinet Progresio</title>
+<link rel="stylesheet" href="assets/style.css"/>
+<style>
+.filter-bar {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px;
+}
+.filter-btn {
+  padding: 7px 16px; border-radius: 99px; border: 2px solid var(--border);
+  background: white; font-size: 13px; font-weight: 600; cursor: pointer;
+  color: var(--text-mid); transition: .2s;
+}
+.filter-btn:hover, .filter-btn.active {
+  background: var(--green-main); border-color: var(--green-main); color: white;
+}
+
+.kegiatan-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.k-card {
+  background: white; border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; transition: box-shadow .2s, transform .2s;
+}
+.k-card:hover { box-shadow: 0 6px 24px var(--shadow); transform: translateY(-3px); }
+.k-img {
+  height: 140px; display: flex; align-items: center;
+  justify-content: center; font-size: 48px; background: var(--green-light);
+}
+.k-body { padding: 16px; }
+.k-title { font-size: 14px; font-weight: 700; margin: 8px 0 6px; line-height: 1.4; }
+.k-meta { font-size: 12px; color: var(--text-light); display: flex; flex-direction: column; gap: 3px; }
+.k-meta span { display: flex; align-items: center; gap: 5px; }
+
+/* PROKER TABLE */
+.proker-section { background: white; border-radius: 14px; border: 1px solid var(--border); overflow: hidden; }
+.proker-section table { width: 100%; border-collapse: collapse; }
+.proker-section thead th {
+  background: var(--green-main); color: white; padding: 12px 16px;
+  text-align: left; font-size: 13px; font-weight: 700;
+}
+.proker-section tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+.proker-section tbody tr:hover { background: var(--green-pale); }
+.proker-section tbody td { padding: 12px 16px; font-size: 13px; vertical-align: middle; }
+.progress-cell { min-width: 120px; }
+.prog-bar { height: 7px; background: var(--green-light); border-radius: 4px; overflow: hidden; margin-top: 4px; }
+.prog-fill { height: 100%; border-radius: 4px; background: var(--green-main); }
+.prog-fill.amber { background: var(--gold-main); }
+.prog-fill.red { background: #ef4444; }
+.prog-pct { font-size: 12px; font-weight: 700; color: var(--green-main); }
+
+/* KALENDER */
+.kalender-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 14px; }
+.event-item {
+  background: white; border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px 16px; display: flex; gap: 14px; align-items: flex-start;
+}
+.event-date {
+  flex-shrink: 0; background: var(--green-main); color: white;
+  border-radius: 8px; padding: 6px 10px; text-align: center; min-width: 48px;
+}
+.event-date .day { font-size: 20px; font-weight: 900; line-height: 1; }
+.event-date .mon { font-size: 10px; font-weight: 600; text-transform: uppercase; }
+.event-body h4 { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+.event-body p { font-size: 12px; color: var(--text-light); }
+
+@media(max-width:768px) {
+  .kegiatan-grid { grid-template-columns: 1fr 1fr; }
+}
+@media(max-width:480px) {
+  .kegiatan-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="page-hero">
+  <h1>Kegiatan & Program Kerja</h1>
+  <p>Seluruh program dan kegiatan BEM FKIP Kabinet Progresio 2025</p>
+</div>
+
+<div class="container">
+
+  <!-- KEGIATAN -->
+  <div class="section-heading" style="margin-top:8px">
+    <h2>Galeri Kegiatan</h2>
+    <p>Dokumentasi kegiatan yang telah & sedang berlangsung</p>
+    <div class="line"></div>
+  </div>
+
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" onclick="filterKegiatan(this,'semua')">Semua</button>
+  </div>
+
+  <div class="kegiatan-grid" id="kegiatanGrid"></div>
+
+  <!-- PROGRAM KERJA -->
+  <div class="section-heading" style="margin-top:56px">
+    <h2>Program Kerja 2025</h2>
+    <p>Rencana dan realisasi program kerja Kabinet Progresio</p>
+    <div class="line"></div>
+  </div>
+
+  <div class="proker-section" style="margin-bottom:48px">
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Program Kerja</th>
+          <th>Departemen</th>
+          <th>Waktu</th>
+          <th>Status</th>
+          <th>Progress</th>
+        </tr>
+      </thead>
+      <tbody id="prokerTbody"></tbody>
+    </table>
+  </div>
+
+  <!-- KALENDER -->
+  <div class="section-heading">
+    <h2>Kalender Kegiatan</h2>
+    <p>Jadwal kegiatan BEM FKIP semester ini</p>
+    <div class="line"></div>
+  </div>
+  <div class="kalender-grid" id="kalenderGrid" style="margin-bottom:16px"></div>
+
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="assets/data.js"></script>
+<script src="assets/main.js"></script>
+<script>
+// ── Mapping status → label & style ──────────────────────────────
+const STATUS_MAP = {
+  selesai:  { label: 'Selesai',    badge: 'badge-green', pctColor: 'var(--green-main)', barClass: '' },
+  berjalan: { label: 'Berjalan',   badge: '',            pctColor: '#1d4ed8',           barClass: '', barStyle: 'background:#3b82f6', badgeStyle: 'background:#dbeafe;color:#1d4ed8' },
+  rencana:  { label: 'Direncanakan', badge: 'badge-gold', pctColor: 'var(--gold-dark)', barClass: 'amber' },
+  default:  { label: 'Belum Mulai', badge: 'badge-gray', pctColor: '#9ca3af',           barClass: '' }
+};
+
+// ── DEPT → warna badge ────────────────────────────────────────────
+function deptBadge(dept) {
+  const map = {
+    'Pendidikan':               'badge-green',
+    'Minat & Bakat':            'badge-gold',
+    'Advokasi':                 'badge-green',
+    'Keagamaan':                'badge-green',
+    'Kominfo':                  'badge-green',
+    'Jaringan':                 'badge-gold',
+  };
+  return map[dept] || 'badge-green';
+}
+
+// ── DEPT → ikon default ──────────────────────────────────────────
+function deptIcon(dept) {
+  const map = {
+    'Pendidikan':    '🎓',
+    'Minat & Bakat': '🎭',
+    'Advokasi':      '🤝',
+    'Keagamaan':     '🕌',
+    'Kominfo':       '📢',
+    'Jaringan':      '🌐',
+  };
+  return map[dept] || '📋';
+}
+
+// ── RENDER GALERI ────────────────────────────────────────────────
+async function renderGaleri(filter) {
+  const kegiatan = await BEM.getData('kegiatan') || [];
+  const grid = document.getElementById('kegiatanGrid');
+
+  const filtered = filter === 'semua'
+    ? kegiatan
+    : kegiatan.filter(k => k.dept === filter);
+
+  if (!filtered.length) {
+    grid.innerHTML = '<p style="color:var(--text-light);padding:24px 0">Belum ada kegiatan untuk departemen ini.</p>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(k => {
+    const st = k.status === 'selesai'  ? '✅ Terlaksana'
+             : k.status === 'berjalan' ? '🔄 Sedang Berjalan'
+             : '📌 Direncanakan';
+    const icon = k.icon || deptIcon(k.dept);
+    const badge = deptBadge(k.dept);
+    return `<div class="k-card" data-dept="${k.dept}">
+      <div class="k-img">${icon}</div>
+      <div class="k-body">
+        <span class="badge ${badge}">${k.dept}</span>
+        <div class="k-title">${k.nama}</div>
+        <div class="k-meta">
+          <span>📅 ${k.tanggal}</span>
+          <span>📍 ${k.tempat}</span>
+          <span>${st}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── RENDER FILTER BAR ─────────────────────────────────────────────
+async function renderFilterBar() {
+  const kegiatan = await BEM.getData('kegiatan') || [];
+  const depts = [...new Set(kegiatan.map(k => k.dept).filter(Boolean))].sort();
+  const bar = document.getElementById('filterBar');
+  // Hapus tombol lama kecuali "Semua"
+  bar.innerHTML = '<button class="filter-btn active" onclick="filterKegiatan(this,\'semua\')">Semua</button>';
+  depts.forEach(dept => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn';
+    btn.textContent = dept;
+    btn.onclick = function() { filterKegiatan(this, dept); };
+    bar.appendChild(btn);
+  });
+}
+
+// ── FILTER HANDLER ────────────────────────────────────────────────
+function filterKegiatan(btn, cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGaleri(cat);
+}
+
+// ── RENDER PROKER TABLE ───────────────────────────────────────────
+async function renderProker() {
+  const proker = await BEM.getData('proker') || [];
+  const tbody = document.getElementById('prokerTbody');
+  if (!proker.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:24px">Belum ada program kerja.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = proker.map((p, i) => {
+    const st = STATUS_MAP[p.status] || STATUS_MAP.default;
+    const badgeEl = st.badgeStyle
+      ? `<span class="badge" style="${st.badgeStyle}">${st.label}</span>`
+      : `<span class="badge ${st.badge}">${st.label}</span>`;
+    const pct = p.pct || 0;
+    const barFillStyle = st.barStyle ? ` style="width:${pct}%;${st.barStyle}"` : ` style="width:${pct}%"`;
+    return `<tr>
+      <td>${i + 1}</td>
+      <td><strong>${p.nama}</strong></td>
+      <td>${p.dept}</td>
+      <td>${p.waktu}</td>
+      <td>${badgeEl}</td>
+      <td class="progress-cell">
+        <div class="prog-pct" style="color:${st.pctColor}">${pct}%</div>
+        <div class="prog-bar"><div class="prog-fill ${st.barClass}"${barFillStyle}></div></div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── RENDER KALENDER ───────────────────────────────────────────────
+async function renderKalender() {
+  const kegiatan = await BEM.getData('kegiatan') || [];
+  const grid = document.getElementById('kalenderGrid');
+  if (!kegiatan.length) {
+    grid.innerHTML = '<p style="color:var(--text-light)">Belum ada jadwal kegiatan.</p>';
+    return;
+  }
+  grid.innerHTML = kegiatan.map(k => {
+    // Coba parse tanggal untuk angka hari & bulan
+    const parsed = new Date(k.tanggal);
+    const isValidDate = !isNaN(parsed.getTime());
+    const BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    const dayLabel  = isValidDate ? String(parsed.getDate()).padStart(2,'0') : k.tanggal.slice(0,3);
+    const monLabel  = isValidDate ? BULAN[parsed.getMonth()] : '';
+    const bgStyle   = k.status === 'rencana' ? 'style="background:var(--gold-dark)"' : '';
+    return `<div class="event-item">
+      <div class="event-date" ${bgStyle}>
+        <div class="day">${dayLabel}</div>
+        <div class="mon">${monLabel}</div>
+      </div>
+      <div class="event-body">
+        <h4>${k.nama}</h4>
+        <p>${k.tempat}${k.dept ? ' · ' + k.dept : ''}</p>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────
+(async function() {
+  await renderFilterBar();
+  await renderGaleri('semua');
+  await renderProker();
+  await renderKalender();
+})();
+</script>
+</body>
+</html>

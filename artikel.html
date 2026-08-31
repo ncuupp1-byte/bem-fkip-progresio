@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Artikel — BEM FKIP Kabinet Progresio</title>
+<script src="assets/data.js"></script>
+<link rel="stylesheet" href="assets/style.css"/>
+<style>
+.artikel-wrap {
+  max-width: 780px; margin: 0 auto; padding: 40px 24px;
+}
+.artikel-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--green-main); text-decoration: none; font-size: 13px;
+  font-weight: 600; margin-bottom: 24px;
+  padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border);
+  background: white; transition: .15s;
+}
+.artikel-back:hover { background: var(--green-light); }
+
+.artikel-header { margin-bottom: 28px; }
+.artikel-header .meta {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.artikel-header h1 {
+  font-size: 28px; font-weight: 900; color: var(--text-dark);
+  line-height: 1.35; margin-bottom: 14px;
+}
+.artikel-header .info {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  font-size: 13px; color: var(--text-light); padding: 12px 0;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.artikel-header .info span { display: flex; align-items: center; gap: 4px; }
+
+.artikel-featured-img {
+  width: 100%; height: 260px; background: var(--green-light);
+  border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  font-size: 80px; margin: 24px 0; border: 1px solid var(--border);
+}
+
+.artikel-body {
+  font-size: 15px; line-height: 1.85; color: var(--text-dark);
+}
+.artikel-body p { margin-bottom: 16px; }
+.artikel-body h2 { font-size: 20px; font-weight: 800; color: var(--green-main); margin: 28px 0 10px; }
+.artikel-body h3 { font-size: 17px; font-weight: 700; color: var(--text-dark); margin: 20px 0 8px; }
+.artikel-body ul, .artikel-body ol { padding-left: 22px; margin-bottom: 16px; }
+.artikel-body ul li, .artikel-body ol li { margin-bottom: 6px; }
+.artikel-body blockquote {
+  border-left: 4px solid var(--gold-main); margin: 20px 0;
+  padding: 12px 18px; background: var(--gold-pale);
+  border-radius: 0 8px 8px 0; font-style: italic; color: var(--text-mid);
+}
+.artikel-body strong { color: var(--green-main); }
+.artikel-body a { color: var(--green-main); }
+
+.artikel-footer {
+  margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+}
+.artikel-footer .penulis { font-size: 13px; color: var(--text-light); }
+.artikel-footer .penulis strong { color: var(--text-dark); }
+
+.artikel-related { margin-top: 48px; }
+.artikel-related h3 { font-size: 16px; font-weight: 700; color: var(--green-main); margin-bottom: 16px; }
+.related-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.related-card {
+  background: white; border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px; display: flex; gap: 12px; text-decoration: none;
+  color: var(--text-dark); transition: box-shadow .2s, transform .15s;
+}
+.related-card:hover { box-shadow: 0 4px 16px var(--shadow); transform: translateY(-2px); }
+.related-icon { font-size: 28px; flex-shrink: 0; }
+.related-body .title { font-size: 13px; font-weight: 700; line-height: 1.4; margin-bottom: 3px; }
+.related-body .meta { font-size: 11px; color: var(--text-light); }
+
+.not-found {
+  text-align: center; padding: 80px 24px; color: var(--text-light);
+}
+.not-found .icon { font-size: 56px; margin-bottom: 16px; }
+.not-found h2 { font-size: 20px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; }
+
+@media(max-width:600px) {
+  .artikel-header h1 { font-size: 22px; }
+  .related-grid { grid-template-columns: 1fr; }
+  .artikel-featured-img { height: 180px; font-size: 56px; }
+}
+</style>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="artikel-wrap">
+  <a href="berita.html" class="artikel-back">← Kembali ke Berita</a>
+  <div id="artikelContent"></div>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="assets/data.js"></script>
+<script src="assets/main.js"></script>
+<script>
+// ── Ambil ID dari URL ──────────────────────────────────────────
+const params = new URLSearchParams(window.location.search);
+const artikelId = parseInt(params.get('id'));
+
+(async function() {
+const berita = await BEM.getData('berita') || [];
+const artikel = berita.find(b => b.id == artikelId);
+
+const content = document.getElementById('artikelContent');
+
+if (!artikel) {
+  content.innerHTML = `
+    <div class="not-found">
+      <div class="icon">📰</div>
+      <h2>Artikel tidak ditemukan</h2>
+      <p style="margin-bottom:20px">Artikel yang kamu cari mungkin sudah dihapus atau belum dipublikasi.</p>
+      <a href="berita.html" class="btn btn-primary">← Kembali ke Berita</a>
+    </div>
+  `;
+} else {
+  // Update page title
+  document.title = artikel.judul + ' — BEM FKIP Kabinet Progresio';
+
+  // Render isi artikel — support newline sebagai paragraf
+  const renderIsi = (isi) => {
+    if (!isi) return '<p><em>Isi artikel belum tersedia.</em></p>';
+    return isi.split('\n\n')
+      .filter(p => p.trim())
+      .map(p => {
+        const t = p.trim();
+        if (t.startsWith('## ')) return `<h2>${t.slice(3)}</h2>`;
+        if (t.startsWith('### ')) return `<h3>${t.slice(4)}</h3>`;
+        if (t.startsWith('> ')) return `<blockquote>${t.slice(2)}</blockquote>`;
+        if (t.startsWith('- ')) {
+          const items = t.split('\n').filter(l => l.startsWith('- ')).map(l => `<li>${l.slice(2)}</li>`).join('');
+          return `<ul>${items}</ul>`;
+        }
+        return `<p>${t.replace(/\n/g, '<br/>')}</p>`;
+      }).join('\n');
+  };
+
+  // Artikel terkait (selain artikel ini, maks 4)
+  const related = berita.filter(b => b.id !== artikel.id).slice(0, 4);
+
+  content.innerHTML = `
+    <div class="artikel-header">
+      <div class="meta">
+        <span class="badge badge-green">${artikel.kategori}</span>
+        ${artikel.featured ? '<span class="badge badge-gold">⭐ Featured</span>' : ''}
+      </div>
+      <h1>${artikel.judul}</h1>
+      <div class="info">
+        <span>📅 ${artikel.tanggal}</span>
+        <span>✍️ ${artikel.penulis || 'BEM FKIP'}</span>
+        <span>📂 ${artikel.kategori}</span>
+      </div>
+    </div>
+
+    <div class="artikel-featured-img">${artikel.icon || '📰'}</div>
+
+    <div class="artikel-body">
+      ${renderIsi(artikel.isi)}
+    </div>
+
+    <div class="artikel-footer">
+      <div class="penulis">
+        Ditulis oleh <strong>${artikel.penulis || 'BEM FKIP'}</strong> · ${artikel.tanggal}
+      </div>
+      <div style="display:flex;gap:8px">
+        <a href="berita.html" class="btn btn-outline" style="font-size:12px">← Semua Berita</a>
+        ${BEM.currentUser() ? `<a href="admin/berita.html" class="btn btn-primary" style="font-size:12px">✏️ Edit Artikel</a>` : ''}
+      </div>
+    </div>
+
+    ${related.length ? `
+    <div class="artikel-related">
+      <h3>Berita Lainnya</h3>
+      <div class="related-grid">
+        ${related.map(r => `
+          <a href="artikel.html?id=${r.id}" class="related-card">
+            <div class="related-icon">${r.icon || '📰'}</div>
+            <div class="related-body">
+              <div class="title">${r.judul}</div>
+              <div class="meta">${r.kategori} · ${r.tanggal}</div>
+            </div>
+          </a>
+        `).join('')}
+      </div>
+    </div>
+    ` : ''}
+  `;
+}
+})();
+</script>
+</body>
+</html>

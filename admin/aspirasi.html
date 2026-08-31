@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Aspirasi — Admin BEM FKIP</title>
+<script src="../assets/data.js"></script>
+<link rel="stylesheet" href="admin-shared.css"/>
+</head>
+<body>
+<div id="app"></div>
+<script src="admin-ui.js"></script>
+<script>
+const user = BEM.requireAuth('aspirasi');
+if (!user) throw '';
+initAdminShell(user, 'aspirasi', 'Aspirasi Masuk');
+
+function render() {
+  let aspirasi = JSON.parse(localStorage.getItem('aspirasi_bem') || '[]');
+  const masuk = aspirasi.filter(a => a.status === 'Masuk').length;
+
+  setContent(`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+      <div>
+        <h2 style="font-size:18px;font-weight:800;color:var(--green)">Aspirasi Masuk</h2>
+        <p style="font-size:13px;color:var(--muted)">${masuk} belum ditindaklanjuti · ${aspirasi.length} total</p>
+      </div>
+      ${masuk > 0 ? `<button class="btn btn-green" onclick="tandaiSemua()">✅ Tandai Semua Selesai</button>` : ''}
+    </div>
+
+    ${aspirasi.length === 0 ? `
+      <div style="text-align:center;padding:60px;color:var(--muted)">
+        <div style="font-size:40px;margin-bottom:12px">💬</div>
+        <div style="font-size:14px">Belum ada aspirasi masuk.</div>
+      </div>
+    ` : `
+    <div class="panel">
+      <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead><tr><th>Tgl</th><th>Pengirim</th><th>Prodi</th><th>Kategori</th><th>Subjek</th><th>Status</th><th>Aksi</th></tr></thead>
+          <tbody>
+            ${aspirasi.map((a, i) => `
+              <tr>
+                <td style="color:var(--muted);white-space:nowrap">${a.tanggal}</td>
+                <td style="font-weight:600">${a.nama}</td>
+                <td style="color:var(--muted)">${a.prodi||'—'}</td>
+                <td><span class="b b-blue">${a.kategori||'Umum'}</span></td>
+                <td style="max-width:200px">
+                  <div style="font-weight:600;margin-bottom:2px">${a.subjek}</div>
+                  <div style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px">${a.pesan}</div>
+                </td>
+                <td><span class="b ${a.status==='Masuk'?'b-gold':a.status==='Diproses'?'b-blue':'b-green'}">${a.status}</span></td>
+                <td>
+                  ${a.status === 'Masuk' ? `<button class="btn btn-outline" onclick="prosesAspirasi(${i})" style="margin-right:4px">📋 Proses</button>` : ''}
+                  ${a.status === 'Diproses' ? `<button class="btn btn-green" onclick="selesaiAspirasi(${i})" style="margin-right:4px">✅ Selesai</button>` : ''}
+                  <button class="btn btn-red" onclick="hapusAspirasi(${i})">🗑</button>
+                </td>
+              </tr>
+              <tr id="detail_${i}" style="display:none;background:var(--green-pale)">
+                <td colspan="7" style="padding:12px 16px">
+                  <strong>Pesan lengkap:</strong><br>
+                  <div style="margin-top:6px;font-size:13px;line-height:1.7;color:var(--text)">${a.pesan}</div>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    `}
+  `);
+}
+
+function prosesAspirasi(i) {
+  const asp = JSON.parse(localStorage.getItem('aspirasi_bem') || '[]');
+  asp[i].status = 'Diproses';
+  localStorage.setItem('aspirasi_bem', JSON.stringify(asp));
+  render();
+}
+function selesaiAspirasi(i) {
+  const asp = JSON.parse(localStorage.getItem('aspirasi_bem') || '[]');
+  asp[i].status = 'Selesai';
+  localStorage.setItem('aspirasi_bem', JSON.stringify(asp));
+  render();
+}
+function hapusAspirasi(i) {
+  if (!confirm('Hapus aspirasi ini?')) return;
+  const asp = JSON.parse(localStorage.getItem('aspirasi_bem') || '[]');
+  asp.splice(i, 1);
+  localStorage.setItem('aspirasi_bem', JSON.stringify(asp));
+  render();
+}
+function tandaiSemua() {
+  const asp = JSON.parse(localStorage.getItem('aspirasi_bem') || '[]');
+  asp.forEach(a => { if (a.status === 'Masuk') a.status = 'Diproses'; });
+  localStorage.setItem('aspirasi_bem', JSON.stringify(asp));
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

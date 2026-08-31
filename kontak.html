@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Kontak — BEM FKIP Kabinet Progresio</title>
+<link rel="stylesheet" href="assets/style.css"/>
+<style>
+.kontak-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+
+.kontak-info-box {
+  display: flex; flex-direction: column; gap: 14px;
+}
+.info-item {
+  background: white; border: 1px solid var(--border); border-radius: 12px;
+  padding: 18px 20px; display: flex; gap: 14px; align-items: flex-start;
+}
+.info-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: var(--green-light); display: flex; align-items: center;
+  justify-content: center; font-size: 20px; flex-shrink: 0;
+}
+.info-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--text-light); margin-bottom: 3px; }
+.info-value { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+.info-sub { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+
+/* FORM */
+.aspirasi-form {
+  background: white; border: 1px solid var(--border); border-radius: 14px; padding: 28px;
+}
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-mid); margin-bottom: 6px; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 10px 14px; font-size: 14px; color: var(--text-dark);
+  background: var(--cream); transition: border .2s;
+  font-family: inherit;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none; border-color: var(--green-main); background: white;
+}
+.form-group textarea { min-height: 120px; resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-submit-btn {
+  width: 100%; padding: 12px; background: var(--green-main); color: white;
+  border: none; border-radius: 8px; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: background .2s; font-family: inherit;
+}
+.form-submit-btn:hover { background: var(--green-mid); }
+.form-note { font-size: 12px; color: var(--text-light); text-align: center; margin-top: 8px; }
+
+/* SOSMED */
+.sosmed-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 28px; }
+.sosmed-card {
+  background: white; border: 1px solid var(--border); border-radius: 12px;
+  padding: 18px; text-align: center; transition: box-shadow .2s; cursor: pointer;
+  text-decoration: none; display: block; color: var(--text-dark);
+}
+.sosmed-card:hover { box-shadow: 0 4px 16px var(--shadow); }
+.sosmed-icon { font-size: 28px; margin-bottom: 8px; }
+.sosmed-name { font-size: 13px; font-weight: 700; }
+.sosmed-handle { font-size: 12px; color: var(--text-light); }
+
+/* SUCCESS */
+.success-msg {
+  display: none; background: var(--green-light); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px; text-align: center; margin-bottom: 16px;
+  color: var(--green-dark); font-weight: 600;
+}
+
+@media(max-width:768px) {
+  .kontak-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .sosmed-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="page-hero">
+  <h1>Kontak & Aspirasi</h1>
+  <p>Hubungi kami atau sampaikan aspirasi Anda</p>
+</div>
+
+<div class="container">
+  <div class="kontak-grid">
+
+    <!-- INFO KONTAK -->
+    <div>
+      <h2 style="font-size:20px;font-weight:800;color:var(--green-main);margin-bottom:20px">Informasi Kontak</h2>
+      <div class="kontak-info-box">
+        <div class="info-item">
+          <div class="info-icon">📍</div>
+          <div>
+            <div class="info-label">Alamat Sekretariat</div>
+            <div class="info-value">Gedung FKIP Lt. 2, Ruang BEM</div>
+            <div class="info-sub">Universitas Nahdlatul Ulama Cirebon<br>Jl. Evakuasi No. 11, Cirebon, Jawa Barat</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">✉</div>
+          <div>
+            <div class="info-label">Email Resmi</div>
+            <div class="info-value">bemfkip@unucirebon.ac.id</div>
+            <div class="info-sub">Dibalas pada hari kerja (Senin–Jumat)</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">⏰</div>
+          <div>
+            <div class="info-label">Jam Operasional Sekretariat</div>
+            <div class="info-value">Senin – Jumat: 09.00 – 16.00 WIB</div>
+            <div class="info-sub">Sabtu: 09.00 – 12.00 WIB (kondisional)</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">📱</div>
+          <div>
+            <div class="info-label">WhatsApp (untuk keperluan resmi)</div>
+            <div class="info-value">+62 xxx-xxxx-xxxx</div>
+            <div class="info-sub">Hubungi Sekretaris Umum BEM FKIP</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIVISI KONTAK -->
+      <h3 style="font-size:16px;font-weight:700;color:var(--text-dark);margin:24px 0 14px">Kontak Per Divisi</h3>
+      <div style="background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden">
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <thead>
+            <tr style="background:var(--green-light)">
+              <th style="padding:10px 14px;text-align:left;font-weight:700;color:var(--green-dark)">Divisi</th>
+              <th style="padding:10px 14px;text-align:left;font-weight:700;color:var(--green-dark)">Penanggung Jawab</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--green-pale)"><td style="padding:10px 14px">Akademik</td><td style="padding:10px 14px;color:var(--text-light)">Kadiv Akademik</td></tr>
+            <tr style="border-bottom:1px solid var(--green-pale);background:var(--cream)"><td style="padding:10px 14px">Sosmas</td><td style="padding:10px 14px;color:var(--text-light)">Kadiv Sosmas</td></tr>
+            <tr style="border-bottom:1px solid var(--green-pale)"><td style="padding:10px 14px">PSDM</td><td style="padding:10px 14px;color:var(--text-light)">Kadiv PSDM</td></tr>
+            <tr style="border-bottom:1px solid var(--green-pale);background:var(--cream)"><td style="padding:10px 14px">Kominfo</td><td style="padding:10px 14px;color:var(--text-light)">Kadiv Kominfo</td></tr>
+            <tr style="border-bottom:1px solid var(--green-pale)"><td style="padding:10px 14px">Advokasi</td><td style="padding:10px 14px;color:var(--text-light)">Kadiv Advokasi</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FORM ASPIRASI -->
+    <div>
+      <h2 style="font-size:20px;font-weight:800;color:var(--green-main);margin-bottom:20px">Sampaikan Aspirasi</h2>
+      <div class="aspirasi-form">
+        <div class="success-msg" id="successMsg">
+          ✅ Aspirasi Anda berhasil terkirim! Kami akan menindaklanjuti secepatnya.
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nama">Nama Lengkap *</label>
+            <input type="text" id="nama" placeholder="Nama Anda..."/>
+          </div>
+          <div class="form-group">
+            <label for="nim">NIM</label>
+            <input type="text" id="nim" placeholder="NIM (opsional)"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="prodi">Program Studi</label>
+            <select id="prodi">
+              <option value="">Pilih Prodi...</option>
+              <option>Pendidikan Bahasa Indonesia</option>
+              <option>Pendidikan Bahasa Inggris</option>
+              <option>Pendidikan Matematika</option>
+              <option>PGSD</option>
+              <option>Prodi Lainnya</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="kategori">Kategori Aspirasi</label>
+            <select id="kategori">
+              <option>Akademik & Perkuliahan</option>
+              <option>Fasilitas Kampus</option>
+              <option>Kegiatan Organisasi</option>
+              <option>Advokasi & Kebijakan</option>
+              <option>Saran Umum</option>
+              <option>Lainnya</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="subjek">Subjek *</label>
+          <input type="text" id="subjek" placeholder="Judul singkat aspirasi Anda..."/>
+        </div>
+        <div class="form-group">
+          <label for="pesan">Pesan / Aspirasi *</label>
+          <textarea id="pesan" placeholder="Tulis aspirasi, saran, atau masukan Anda untuk BEM FKIP Kabinet Progresio..."></textarea>
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer">
+            <input type="checkbox" id="anonim" style="width:auto;margin-top:3px"/>
+            <span style="font-size:13px;color:var(--text-mid);font-weight:normal">Kirim sebagai anonim (nama tidak ditampilkan)</span>
+          </label>
+        </div>
+        <button class="form-submit-btn" onclick="submitAspirasi()">Kirim Aspirasi →</button>
+        <p class="form-note">* Aspirasi akan diterima dan ditindaklanjuti oleh Divisi Advokasi BEM FKIP.<br>Data Anda dijaga kerahasiaannya.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SOSMED -->
+  <div style="margin-top:48px">
+    <div class="section-heading">
+      <h2>Ikuti Kami di Media Sosial</h2>
+      <p>Update terbaru BEM FKIP Kabinet Progresio</p>
+      <div class="line"></div>
+    </div>
+    <div class="sosmed-grid">
+      <a href="#" class="sosmed-card">
+        <div class="sosmed-icon">📷</div>
+        <div class="sosmed-name">Instagram</div>
+        <div class="sosmed-handle">@bemfkip_unuc</div>
+      </a>
+      <a href="#" class="sosmed-card">
+        <div class="sosmed-icon">💬</div>
+        <div class="sosmed-name">WhatsApp Group</div>
+        <div class="sosmed-handle">Grup Mahasiswa FKIP</div>
+      </a>
+      <a href="#" class="sosmed-card">
+        <div class="sosmed-icon">▶</div>
+        <div class="sosmed-name">YouTube</div>
+        <div class="sosmed-handle">BEM FKIP UNUC</div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="assets/main.js"></script>
+<script>
+function submitAspirasi() {
+  const nama = document.getElementById('nama').value;
+  const subjek = document.getElementById('subjek').value;
+  const pesan = document.getElementById('pesan').value;
+  if (!nama || !subjek || !pesan) {
+    alert('Mohon lengkapi field yang bertanda *');
+    return;
+  }
+  // Simpan ke localStorage sebagai demo
+  const aspirasi = JSON.parse(localStorage.getItem('aspirasi_bem') || '[]');
+  aspirasi.push({
+    nama: document.getElementById('anonim').checked ? 'Anonim' : nama,
+    nim: document.getElementById('nim').value,
+    prodi: document.getElementById('prodi').value,
+    kategori: document.getElementById('kategori').value,
+    subjek, pesan,
+    tanggal: new Date().toLocaleDateString('id-ID'),
+    status: 'Masuk'
+  });
+  localStorage.setItem('aspirasi_bem', JSON.stringify(aspirasi));
+  document.getElementById('successMsg').style.display = 'block';
+  document.getElementById('nama').value = '';
+  document.getElementById('subjek').value = '';
+  document.getElementById('pesan').value = '';
+  window.scrollTo({ top: document.querySelector('.aspirasi-form').offsetTop - 80, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
