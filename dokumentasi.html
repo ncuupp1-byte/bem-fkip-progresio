@@ -173,6 +173,15 @@
 
 /* Charts */
 #keuDash .keu-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+/* ── PUBLIK: sembunyikan semua form input & tombol aksi ── */
+#keuDash .keu-panel:has(#keu_t_tanggal),
+#keuDash .keu-panel:has(#keu_p_nama),
+#keuDash .keu-panel:has(#keu_rab_uraian) { display: none; }
+#keuDash .keu-act-row { display: none; }
+#keuDash .kdel { display: none; }
+#keuDash .saldo-box input[type=number] { display: none; }
+#keuDash .kb-outline[onclick="keuPrint()"] { display: none; }
 #keuDash .keu-chart-wrap { position: relative; height: 220px; }
 #keuDash .keu-empty { text-align: center; color: #9ca3af; padding: 28px; font-size: 13px; }
 
